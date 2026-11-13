@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0a0b12">
+<title>F1 League</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0b12;
+  --panel: #151826;
+  --panel2: #1d2133;
+  --line: #2c3250;
+  --text: #ffffff;
+  --muted: #9aa3bd;
+  --accent: #ff1801;
+  --display: 'Barlow Condensed', Impact, sans-serif;
+  --body: Barlow, Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 var(--body); }
+button, a { font: inherit; }
+button { color: inherit; }
+.wrap { width: min(1080px, calc(100% - 32px)); margin: 0 auto; }
+.hidden { display: none !important; }
+
+/* header */
+.top { position: sticky; top: 0; z-index: 10; background: var(--bg); border-bottom: 3px solid var(--accent); }
+.topin { min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text); }
+.brandimg { height: 42px; width: auto; max-width: 260px; display: block; object-fit: contain; }
+.brandmark { background: var(--accent); font: 800 22px/1 var(--display); padding: 6px 10px; border-radius: 3px; }
+.brandname { font: 700 24px/1 var(--display); letter-spacing: .04em; text-transform: uppercase; }
+.nav { display: flex; gap: 22px; }
+.nav a { padding: 6px 0; text-decoration: none; color: var(--muted); font: 700 20px var(--display); letter-spacing: .03em; text-transform: uppercase; border-bottom: 3px solid transparent; }
+.nav a { transition: color .15s, border-color .15s; }
+.nav a:hover { color: var(--text); border-bottom-color: var(--accent); }
+.nav a.active { color: var(--text); border-bottom-color: var(--accent); }
+
+/* page heading */
+.pagehead { padding: 38px 0 6px; }
+.pagehead h1 { margin: 0; font: 800 clamp(40px, 7vw, 64px)/1 var(--display); text-transform: uppercase; }
+.pagehead p { margin: 6px 0 0; color: var(--muted); }
+
+h2.small { margin: 34px 0 4px; font: 700 26px var(--display); text-transform: uppercase; letter-spacing: .02em; }
+.note { margin: 0 0 12px; color: var(--muted); font-size: 14px; }
+
+/* calendar */
+.rounds { display: flex; flex-wrap: wrap; gap: 8px; }
+.round { min-width: 72px; border: 1px solid var(--line); background: var(--panel); padding: 8px 12px; cursor: pointer; border-radius: 4px; text-align: left; }
+.round { transition: transform .15s, border-color .15s, box-shadow .15s; }
+.round:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(255,24,1,.35); }
+.round.selected { border-color: var(--accent); background: var(--accent); color: #fff; }
+.round.selected .rcode { color: rgba(255,255,255,.85); }
+.round.upcoming { border-style: dashed; color: var(--muted); }
+.round .rnum { display: block; font: 700 22px/1.1 var(--display); }
+.round .rcode { display: block; font-size: 12px; color: var(--muted); }
+
+/* race */
+#race-detail { scroll-margin-top: 80px; }
+.racehead { margin: 34px 0 14px; }
+.racehead .roundlabel { color: var(--accent); font-size: 14px; font-weight: 600; }
+.racehead h2 { margin: 2px 0 2px; font: 800 clamp(32px, 6vw, 48px)/1.05 var(--display); text-transform: uppercase; }
+.racemeta { color: var(--muted); font-size: 14px; }
+.racefacts { display: flex; flex-wrap: wrap; gap: 28px; margin: 18px 0 8px; padding: 14px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.fact label { display: block; color: var(--muted); font-size: 13px; }
+.fact strong { font: 700 24px/1.2 var(--display); }
+.empty { border: 1px dashed var(--line); padding: 24px 20px; color: var(--muted); margin: 16px 0; border-radius: 4px; }
+.empty strong { display: block; font: 700 22px var(--display); text-transform: uppercase; color: var(--text); margin-bottom: 2px; }
+
+.podium { display: grid; grid-template-columns: 1fr 1.1fr 1fr; align-items: end; gap: 8px; margin: 22px 0; }
+.pod { min-width: 0; text-align: center; }
+.pod .medal { color: var(--muted); font-size: 13px; }
+.podlogo { display: flex; justify-content: center; margin-top: 8px; }
+.podlogo .tlogo { width: 38px; height: 38px; }
+.podname { font-weight: 700; overflow-wrap: anywhere; margin-top: 6px; }
+.podteam { font-size: 13px; color: var(--muted); }
+.podblock { margin-top: 8px; background: color-mix(in srgb, var(--team, #657080) 45%, var(--panel)); border: 1px solid var(--team, var(--line)); border-bottom: 0; border-radius: 4px 4px 0 0; transition: background .2s, transform .2s; padding: 8px; font: 800 40px/1 var(--display); height: 64px; }
+.pod.p1 .podblock { height: 92px; background: var(--team, var(--accent)); color: var(--ink, #fff); font-size: 56px; }
+.pod { cursor: default; }
+.pod:hover .podblock { background: var(--team); color: var(--ink, #fff); transform: translateY(-4px); }
+.pod:hover .podname { color: var(--team); }
+.pod .podname { transition: color .15s; }
+.pod.p2 .podblock { height: 76px; }
+
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); background: var(--panel); border-radius: 4px; }
+table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+th { padding: 10px 14px; text-align: left; background: var(--panel2); border-bottom: 1px solid var(--line); color: var(--muted); font-size: 13px; font-weight: 600; white-space: nowrap; }
+td { padding: 9px 14px; border-bottom: 1px solid var(--line); }
+tbody tr:last-child td { border: 0; }
+tbody tr td { transition: background .15s; }
+tbody tr:hover td { background: color-mix(in srgb, var(--team, #657080) 24%, var(--panel)); }
+tbody tr:hover td:first-child { box-shadow: inset 5px 0 0 var(--team, var(--accent)); }
+tbody tr:hover .drivername { color: #fff; }
+tbody tr:hover .pos { color: var(--team, var(--accent)); }
+.pos { width: 52px; text-align: center; font: 700 22px var(--display); }
+.pos.first { color: var(--accent); }
+.drivercell { display: flex; align-items: center; gap: 10px; min-width: 190px; }
+.teamstripe { transition: width .15s; width: 4px; height: 30px; flex: none; border-radius: 2px; background: var(--team, #e10600); }
+.drivername { font-weight: 600; }
+.sub { display: block; color: var(--muted); font-size: 13px; line-height: 1.3; }
+.time { white-space: nowrap; text-align: right; }
+.tag { display: inline-block; margin-left: 6px; border-radius: 3px; background: var(--panel2); border: 1px solid var(--line); color: var(--text); font-size: 11px; font-weight: 700; padding: 0 5px; vertical-align: 2px; }
+.dnf { color: var(--muted); }
+
+/* logos */
+.tlogo { width: 28px; height: 28px; object-fit: contain; flex: none; display: block; }
+.tlogo.fb { display: inline-flex; align-items: center; justify-content: center; background: var(--team, #657080); color: var(--ink, #0b0d11); font: 800 12px/1 var(--display); border-radius: 4px; }
+
+/* drivers page */
+.driversgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 22px; }
+.teamcard { border: 1px solid var(--line); background: var(--panel); overflow: hidden; border-radius: 8px; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease; }
+.teamcard:hover, .teamcard:focus-within { transform: translateY(-5px); border-color: var(--team); background: color-mix(in srgb, var(--team) 12%, var(--panel)); box-shadow: 0 0 0 1px var(--team), 0 14px 34px color-mix(in srgb, var(--team) 40%, transparent); }
+.carstage { position: relative; padding: 18px 18px 6px; background: linear-gradient(135deg, color-mix(in srgb, var(--team) 42%, var(--panel)), color-mix(in srgb, var(--team) 10%, var(--panel))); border-bottom: 4px solid var(--team); transition: background .2s; }
+.teamcard:hover .carstage { background: linear-gradient(135deg, color-mix(in srgb, var(--team) 70%, var(--panel)), color-mix(in srgb, var(--team) 22%, var(--panel))); }
+.carstage::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: rgba(255,255,255,.08); }
+.carimg, .carsvg { display: block; width: 100%; height: 112px; object-fit: contain; filter: drop-shadow(0 8px 10px rgba(0,0,0,.55)); transition: transform .3s ease; }
+.teamcard:hover .carimg, .teamcard:hover .carsvg { transform: translateX(8px) scale(1.05); }
+.teamhead { padding: 12px 16px; display: flex; align-items: center; gap: 11px; border-bottom: 1px solid var(--line); }
+.teamhead .tlogo { width: 34px; height: 34px; }
+.teamhead h3 { transition: color .15s; margin: 0; font: 700 24px var(--display); text-transform: uppercase; letter-spacing: .02em; }
+.teamcard:hover .teamhead h3 { color: var(--team); }
+.teamcount { margin-left: auto; color: var(--muted); font-size: 13px; }
+.teamdrivers { padding: 2px 16px; }
+.driverrow { display: flex; align-items: center; gap: 12px; padding: 10px 8px; margin: 0 -8px; border-bottom: 1px solid var(--line); border-radius: 4px; transition: background .15s, padding-left .15s; }
+.driverrow:hover { background: color-mix(in srgb, var(--team) 30%, transparent); padding-left: 14px; }
+.driverrow:hover .drivername { color: #fff; }
+.driverrow:last-child { border: 0; }
+.number { width: 40px; color: var(--team, var(--accent)); font: 800 26px var(--display); }
+.driverrow .drivername { font-size: 16px; }
+.emptydrivers { grid-column: 1 / -1; }
+
+.foot { padding: 40px 0 44px; color: var(--muted); font-size: 13px; }
+.footin { border-top: 1px solid var(--line); padding-top: 14px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+
+@media (max-width: 650px) {
+  .wrap { width: min(100% - 24px, 1080px); }
+  .brandname { font-size: 20px; }
+  .nav { gap: 14px; }
+  .nav a { font-size: 18px; }
+  .driversgrid { grid-template-columns: 1fr; }
+  .racefacts { gap: 18px; }
+  .podname { font-size: 14px; }
+  .podblock { font-size: 32px; }
+  .pod.p1 .podblock { font-size: 48px; }
+  .tablewrap table { min-width: 520px; }
+}
+</style>
+</head>
+<body>
+<!-- ================================================================
+     EDIT YOUR LEAGUE HERE. You only need to change the CONFIG below.
+     Add teams first, then drivers using the exact team name.
+     Add races in calendar order. A race without results is upcoming.
+     ================================================================ -->
+<script>
+const LEAGUE = {
+  shortName: "F1",
+  name: "Renegades",
+  game: "F1 26",
+  season: "Season 1",
+  logo: "logo.png",   // title image shown in the header (leave "" to use text)
+  accent: "#e10600",
+  footer: "Renegades · F1 26 league"
+};
+
+// TEAM: name, colour (hex), logo = team logo image, car = side-profile image of the 2026 car
+// Put logos in a "logos" folder and cars in a "cars" folder next to this file.
+// If a car image is missing, a plain side-profile drawing in the team colour is shown instead.
+const TEAMS = [
+  { name: "McLaren",      colour: "#ff8000", logo: "logos/mclaren.png",  car: "cars/mclaren.avif" },
+  { name: "Mercedes",     colour: "#27f4d2", logo: "logos/mercedes.png", car: "cars/mercedes.avif" },
+  { name: "Red Bull",     colour: "#3671c6", logo: "logos/redbull.png",  car: "cars/redbull.avif" },
+  { name: "Ferrari",      colour: "#e8002d", logo: "logos/ferrari.png",  car: "cars/ferrari.avif" },
+  { name: "Williams",     colour: "#64c4ff", logo: "logos/williams.png", car: "cars/williams.avif" },
+  { name: "Racing Bulls", colour: "#6692ff", logo: "logos/rb.png",       car: "cars/racingbull.avif" },
+  { name: "Aston Martin", colour: "#229971", logo: "logos/aston.png",    car: "cars/astonmartin.avif" },
+  { name: "Haas",         colour: "#b6babd", logo: "logos/haas.png",     car: "cars/haas.avif" },
+  { name: "Audi",         colour: "#d6ff00", logo: "logos/audi.png",     car: "cars/audi.avif" },
+  { name: "Alpine",       colour: "#ff87bc", logo: "logos/alpine.png",   car: "cars/alpine.avif" },
+  { name: "Cadillac",     colour: "#9aa3ad", logo: "logos/cadillac.png", car: "cars/cadillac.avif" },
+];
+
+// DRIVER: name, number, team (must match a team name above)
+const DRIVERS = [
+  { name: "NL Savage", number: 13, team: "McLaren" },
+  { name: "Rakyesh", number: 11, team: "Mercedes" },
+  { name: "Tr0uble", number: 16, team: "Red Bull" },
+  { name: "Baileydipalma", number: 3, team: "Mercedes" },
+  { name: "D13SEL", number: 72, team: "Alpine" },
+  { name: "2006 Honda Civic", number: 24, team: "Ferrari" },
+  { name: "Floppy", number: 48, team: "Alpine" },
+  { name: "Bondafide Medic", number: 52, team: "Cadillac" },
+  { name: "Dismaw", number: 99, team: "Red Bull" },
+  { name: "B-radd", number: 22, team: "Ferrari" },
+  { name: "The Renegade", number: 21, team: "McLaren" },
+  { name: "Rush v4", number: 4, team: "Audi" },
+  { name: "Mateusz Benek", number: 66, team: "Williams" },
+  { name: "Jonny", number: 44, team: "Aston Martin" },
+  { name: "Derk", number: 8, team: "Haas" },
+  { name: "therealrealromanchu", number: 43, team: "Racing Bulls" },
+  { name: "wrf", number: 2, team: "Cadillac" },
+];
+
+// RACE: code, name, circuit, date, laps, results, dnf, pole, fastestLap, times
+// results = finishers in finishing order. dnf = retired drivers.
+// times = winner's time followed by gaps, in the same order as results. Optional.
+// Leave results out until the race has been completed.
+const RACES = [
+  { code: "AUS", name: "Australian Grand Prix", circuit: "Albert Park Circuit", date: "2026-11-07", laps: 26,
+    results: ["NL Savage", "Baileydipalma", "Rakyesh"],
+    dnf: ["D13SEL", "Dismaw"],
+    pole: "Baileydipalma", fastestLap: "Baileydipalma", times: ["36:04.318", "+2.114", "+1 LAP", "DNF", "DNF"] },
+  
+  { code: "CHN", name: "Chinese Grand Prix", circuit: "Shanghai International Circuit", date: "2026-11-08", laps: 20,
+     results: ["Tr0uble", "D13SEL", "NL Savage", "2006 Honda Civic", "Floppy", "Rakyesh", "Baileydipalma", "Bondafide Medic"], dnf: [],
+     pole: "NL Savage", fastestLap: "2006 Honda Civic", times: ["33:04.809", "+0.924", "+12.195", "+15.552", "+34.473", "+1:04.194", "1:00.645", "+1 LAP"] }, ];
+</script>
+
+<header class="top"><div class="wrap topin">
+  <a class="brand" href="#results"><img class="brandimg hidden" id="brandimg" alt=""><span class="brandmark" id="brandmark">F1</span><span class="brandname" id="brandname">YOUR LEAGUE</span></a>
+  <nav class="nav" aria-label="Main navigation"><a href="#results" id="tab-results" class="active">Results</a><a href="#drivers" id="tab-drivers">Drivers</a></nav>
+</div></header>
+
+<main class="wrap">
+  <div class="pagehead"><h1 id="hero-title">Results</h1><p id="hero-sub"></p></div>
+
+  <section id="page-results">
+    <h2 class="small">Calendar</h2>
+    <p class="note">Click a round to see how it went.</p>
+    <div class="rounds" id="rounds"></div>
+    <div id="race-detail" aria-live="polite"></div>
+  </section>
+
+  <section id="page-drivers" class="hidden">
+    <div class="driversgrid" id="driver-grid"></div>
+  </section>
+</main>
+
+<footer class="wrap foot"><div class="footin"><span id="footer-text"></span><span>Unofficial league website</span></div></footer>
+
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const norm = value => String(value ?? '').trim().toLowerCase();
+  const accent = /^#[0-9a-f]{6}$/i.test(LEAGUE.accent) ? LEAGUE.accent : '#e10600';
+  document.documentElement.style.setProperty('--accent', accent);
+  document.title = `${LEAGUE.shortName} ${LEAGUE.name}`;
+  $('brandmark').textContent = LEAGUE.shortName;
+  $('brandname').textContent = LEAGUE.name;
+  $('footer-text').textContent = LEAGUE.footer;
+
+  // title image: swaps in once it has loaded, otherwise the text stays
+  if (LEAGUE.logo) {
+    const bi = $('brandimg');
+    bi.alt = `${LEAGUE.shortName} ${LEAGUE.name}`;
+    bi.onload = () => { bi.classList.remove('hidden'); $('brandmark').classList.add('hidden'); $('brandname').classList.add('hidden'); };
+    bi.src = LEAGUE.logo;
+  }
+
+  // plain side-on open-wheeler drawn in the team colour (used when a car image is missing)
+  function carSVG(colour) {
+    const c = /^#[0-9a-f]{6}$/i.test(colour || '') ? colour : '#657080';
+    return `<svg class="carsvg" viewBox="0 0 400 110" role="img" aria-label="Car side view" xmlns="http://www.w3.org/2000/svg">
+      <rect x="60" y="76" width="300" height="3" fill="#0a0b0d"/>
+      <path d="M52 77 L56 60 L100 44 L128 34 L150 36 L178 50 L214 52 L262 60 L352 66 L374 72 L352 78 Z" fill="${c}"/>
+      <path d="M120 61 L200 58 L242 64 L120 69 Z" fill="#fff" opacity=".22"/>
+      <rect x="18" y="22" width="42" height="5" rx="2" fill="#15171b"/>
+      <rect x="22" y="22" width="9" height="38" rx="2" fill="${c}"/>
+      <rect x="30" y="58" width="24" height="5" fill="#15171b"/>
+      <rect x="346" y="81" width="50" height="4" rx="2" fill="#15171b"/>
+      <rect x="388" y="70" width="5" height="17" rx="2" fill="${c}"/>
+      <path d="M190 52 Q198 36 226 46 L233 54" fill="none" stroke="#0b0c0e" stroke-width="3.5" stroke-linecap="round"/>
+      <circle cx="203" cy="47" r="6.5" fill="#eceef1"/>
+      <circle cx="96" cy="79" r="25" fill="#101215"/><circle cx="96" cy="79" r="11" fill="#3a3d45"/><circle cx="96" cy="79" r="4" fill="#101215"/>
+      <circle cx="318" cy="79" r="23" fill="#101215"/><circle cx="318" cy="79" r="10" fill="#3a3d45"/><circle cx="318" cy="79" r="4" fill="#101215"/>
+    </svg>`;
+  }
+
+  // broken images fall back instead of showing the browser's broken-image icon
+  document.addEventListener('error', e => {
+    const el = e.target;
+    if (!el || el.tagName !== 'IMG') return;
+    if (el.classList.contains('tlogo')) {
+      const fb = document.createElement('span');
+      fb.className = 'tlogo fb';
+      fb.style.setProperty('--team', el.dataset.c || '#657080');
+      fb.textContent = el.dataset.fb || '';
+      el.replaceWith(fb);
+    } else if (el.classList.contains('carimg')) {
+      el.outerHTML = carSVG(el.dataset.c);
+    }
+  }, true);
+
+  const teamMap = new Map();
+  TEAMS.forEach(team => {
+    const key = norm(team.name);
+    if (key && !teamMap.has(key)) teamMap.set(key, {...team, colour: team.colour || accent});
+  });
+  const drivers = DRIVERS.map((d, i) => ({...d, number: d.number ?? '', id: i, teamData: teamMap.get(norm(d.team)) || {name:d.team || 'Unassigned', colour:'#657080'}}));
+  const driverMap = new Map(drivers.map(d => [norm(d.name), d]));
+  const races = RACES.map((race, i) => ({...race, round:i+1}));
+  let selected = Math.max(0, races.findLastIndex ? races.findLastIndex(r => Array.isArray(r.results) && r.results.length) : races.map(r => Array.isArray(r.results) && r.results.length).lastIndexOf(true));
+  if (selected < 0) selected = 0;
+
+  function formatDate(date) {
+    if (!date) return 'Date TBC';
+    const parsed = new Date(`${date}T12:00:00`);
+    if (Number.isNaN(parsed.getTime())) return date;
+    return new Intl.DateTimeFormat('en-NZ', {weekday:'short', day:'numeric', month:'short', year:'numeric'}).format(parsed);
+  }
+  function logoHTML(team) {
+    const t = team || {};
+    const c = t.colour || '#657080';
+    const ini = String(t.name || '?').split(/\s+/).map(w => w[0]).join('').slice(0,2).toUpperCase();
+    if (!t.logo) return `<span class="tlogo fb" style="--team:${esc(c)}">${esc(ini)}</span>`;
+    return `<img class="tlogo" src="${esc(t.logo)}" alt="${esc(t.name)}" data-fb="${esc(ini)}" data-c="${esc(c)}">`;
+  }
+  function carHTML(team) {
+    if (!team.car) return carSVG(team.colour);
+    return `<img class="carimg" src="${esc(team.car)}" alt="${esc(team.name)} car" data-c="${esc(team.colour || '')}">`;
+  }
+  // black or white text, whichever reads better on a team colour
+  function inkFor(hex) {
+    const m = /^#([0-9a-f]{6})$/i.exec(hex || '');
+    if (!m) return '#fff';
+    const n = parseInt(m[1], 16), r = n >> 16, g = (n >> 8) & 255, b = n & 255;
+    return (0.299*r + 0.587*g + 0.114*b) > 150 ? '#0b0d11' : '#fff';
+  }
+  function teamColour(driver) { return driver?.teamData?.colour || '#657080'; }
+  function driverCell(driver, extra='') {
+    if (!driver) return '<span class="dnf">Unknown driver</span>';
+    const sub = driver.number !== '' ? `#${esc(driver.number)} · ${esc(driver.teamData.name)}` : esc(driver.teamData.name);
+    return `<div class="drivercell"><i class="teamstripe" style="--team:${esc(teamColour(driver))}"></i>${logoHTML(driver.teamData)}<div><span class="drivername">${esc(driver.name)}</span>${extra}<span class="sub">${sub}</span></div></div>`;
+  }
+  function renderRounds() {
+    $('rounds').innerHTML = races.length ? races.map((r,i) => `<button class="round ${Array.isArray(r.results)&&r.results.length?'':'upcoming'} ${i===selected?'selected':''}" data-round="${i}" aria-pressed="${i===selected}" title="${esc(r.name)}"><span class="rnum">R${i+1}</span><span class="rcode">${esc(r.code || `R${i+1}`)}</span></button>`).join('') : '<div class="empty"><strong>No calendar added yet</strong>Add your races in the RACES section at the top of this HTML file.</div>';
+  }
+  function renderRace() {
+    const race = races[selected];
+    if (!race) { $('race-detail').innerHTML = ''; return; }
+    const completed = Array.isArray(race.results) && race.results.length > 0;
+    const meta = [race.circuit, formatDate(race.date), race.laps ? `${race.laps} laps` : ''].filter(Boolean).map(esc).join(' · ');
+    let html = `<div class="racehead"><div class="roundlabel">Round ${race.round} of ${races.length}${completed ? '' : ' · upcoming'}</div><h2>${esc(race.name || `Round ${race.round}`)}</h2><div class="racemeta">${meta}</div></div>`;
+    if (!completed) {
+      html += `<div class="empty"><strong>Not raced yet</strong>${race.date ? `Scheduled for ${esc(formatDate(race.date))}.` : 'Date not confirmed yet.'}</div>`;
+      $('race-detail').innerHTML = html;
+      return;
+    }
+    const finishers = race.results.map(name => driverMap.get(norm(name))).filter(Boolean);
+    const retired = (race.dnf || []).map(name => driverMap.get(norm(name))).filter(Boolean);
+    const unknown = race.results.filter(name => !driverMap.has(norm(name)));
+    const pole = driverMap.get(norm(race.pole));
+    const fastest = driverMap.get(norm(race.fastestLap));
+    const podium = finishers.slice(0,3);
+    html += `<div class="racefacts"><div class="fact"><label>Distance</label><strong>${race.laps ? `${esc(race.laps)} laps` : '—'}</strong></div><div class="fact"><label>Pole</label><strong>${pole ? esc(pole.name) : '—'}</strong></div><div class="fact"><label>Fastest lap</label><strong>${fastest ? esc(fastest.name) : '—'}</strong></div></div>`;
+    if (podium.length) {
+      const order = podium.length >= 3 ? [podium[1],podium[0],podium[2]] : podium;
+      html += `<div class="podium">${order.map(d => {const p=podium.indexOf(d)+1;return `<div class="pod p${p}" style="--team:${esc(teamColour(d))};--ink:${inkFor(teamColour(d))}"><div class="medal">${p===1?'Winner':p===2?'2nd':'3rd'}</div><div class="podlogo">${logoHTML(d.teamData)}</div><div class="podname">${esc(d.name)}</div><div class="podteam">${esc(d.teamData.name)}</div><div class="podblock">${p}</div></div>`;}).join('')}</div>`;
+    }
+    const rows = finishers.map((d,i) => {
+      const tags = `${pole?.id===d.id?'<span class="tag">POLE</span>':''}${fastest?.id===d.id?'<span class="tag">FL</span>':''}`;
+      const time = Array.isArray(race.times) ? (race.times[i] || '—') : '—';
+      return `<tr style="--team:${esc(teamColour(d))}"><td class="pos ${i===0?'first':''}">${i+1}</td><td>${driverCell(d, tags)}</td><td class="time">${esc(time)}</td></tr>`;
+    }).join('');
+    const dnfRows = retired.map(d => `<tr style="--team:${esc(teamColour(d))}"><td class="pos dnf">DNF</td><td>${driverCell(d)}</td><td class="time dnf">Retired</td></tr>`).join('');
+    const unknownRows = unknown.map((name,i) => `<tr><td class="pos">${finishers.length+i+1}</td><td>${esc(name)}<span class="sub">Driver not found in Drivers list</span></td><td class="time">—</td></tr>`).join('');
+    html += `<h2 class="small">Classification</h2><p class="note">${finishers.length} finished${retired.length?`, ${retired.length} retired`:''}</p><div class="tablewrap"><table><thead><tr><th>Pos</th><th>Driver</th><th style="text-align:right">Time / gap</th></tr></thead><tbody>${rows}${unknownRows}${dnfRows}</tbody></table></div>`;
+    $('race-detail').innerHTML = html;
+  }
+  function renderDrivers() {
+    const groups = TEAMS.map(team => ({...team, colour: team.colour || accent, members:drivers.filter(d => norm(d.team)===norm(team.name))}));
+    const unassigned = drivers.filter(d => !teamMap.has(norm(d.team)));
+    if (unassigned.length) groups.push({name:'Other / unassigned', colour:'#657080', members:unassigned});
+    $('driver-grid').innerHTML = groups.length ? groups.map(team => `<article class="teamcard" style="--team:${esc(team.colour)};--ink:${inkFor(team.colour)}"><div class="carstage">${carHTML(team)}</div><header class="teamhead">${logoHTML(team)}<h3>${esc(team.name)}</h3><span class="teamcount">${team.members.length} driver${team.members.length===1?'':'s'}</span></header><div class="teamdrivers">${team.members.length ? team.members.map(d => `<div class="driverrow"><span class="number">${d.number!==''?esc(d.number):'—'}</span>${logoHTML(d.teamData)}<span class="drivername">${esc(d.name)}</span></div>`).join('') : '<div class="driverrow"><span class="drivername dnf">No drivers yet</span></div>'}</div></article>`).join('') : '<div class="empty emptydrivers"><strong>No drivers added yet</strong>Add your teams and drivers in the TEAMS and DRIVERS sections at the top of this HTML file.</div>';
+  }
+  function route() {
+    const page = location.hash === '#drivers' ? 'drivers' : 'results';
+    $('page-results').classList.toggle('hidden', page!=='results');
+    $('page-drivers').classList.toggle('hidden', page!=='drivers');
+    $('tab-results').classList.toggle('active', page==='results');
+    $('tab-drivers').classList.toggle('active', page==='drivers');
+    $('hero-title').textContent = page==='results' ? 'Results' : 'Drivers';
+    $('hero-sub').textContent = page==='results'
+      ? `${LEAGUE.game} · ${LEAGUE.season}`
+      : `${drivers.length} drivers across ${TEAMS.length} teams`;
+  }
+  $('rounds').addEventListener('click', e => {
+    const button = e.target.closest('[data-round]');
+    if (!button) return;
+    selected = Number(button.dataset.round);
+    renderRounds(); renderRace();
+    $('race-detail').scrollIntoView({behavior:'smooth', block:'start'});
+  });
+  window.addEventListener('hashchange', route);
+  renderRounds(); renderRace(); renderDrivers(); route();
+})();
+</script>
+</body>
+</html>
