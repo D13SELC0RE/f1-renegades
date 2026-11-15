@@ -233,6 +233,7 @@ tbody tr:hover .pos { color: var(--team, var(--accent)); }
 .dtools input { flex: 1; min-width: 200px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; color: var(--text); font: inherit; outline: none; transition: border-color .15s, box-shadow .15s; }
 .dtools input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent); }
 .dtools + .driversgrid { margin-top: 14px; }
+.dtools .seg { align-self: center; }
 .btn { border: 1px solid var(--accent); background: var(--accent); color: #fff; border-radius: 8px; padding: 9px 18px; font: 700 18px var(--display); letter-spacing: .05em; text-transform: uppercase; cursor: pointer; transition: transform .15s, box-shadow .15s; }
 .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 22px color-mix(in srgb, var(--accent) 45%, transparent); }
 .noanim .teamcard { animation: none; }
@@ -277,21 +278,53 @@ dialog#h2h::backdrop { background: rgba(3,4,8,.78); backdrop-filter: blur(3px); 
 .mk { width: 22px; text-align: center; font-size: 12px; }
 .h2msg { padding: 28px 22px; color: var(--muted); text-align: center; }
 
+/* segmented switch (stats views, drivers views) */
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; background: var(--panel); padding: 3px; gap: 2px; }
+.seg button { border: 0; background: transparent; color: var(--muted); padding: 6px 16px; border-radius: 999px; font: 700 16px var(--display); letter-spacing: .05em; text-transform: uppercase; cursor: pointer; transition: color .15s, background .15s; }
+.seg button:hover { color: var(--text); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+
 /* stats page */
-.statsec { margin-top: 30px; }
-.statsec:first-child { margin-top: 22px; }
-.statsec h2.small { margin-top: 0; }
-.gridwrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); }
-table.sgrid { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 460px; }
-.sgrid th, .sgrid td { padding: 5px 4px; text-align: center; border-bottom: 1px solid var(--line); }
+.stathead { margin-top: 22px; }
+.statsec { margin-top: 28px; }
+.statsec h2.small { margin: 0 0 12px; }
+.numgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.ntile { border: 1px solid var(--line); border-radius: 10px; background: linear-gradient(180deg, var(--panel2), var(--panel)); padding: 14px 16px 12px; transition: transform .2s, border-color .2s; animation: rise .45s ease backwards; animation-delay: calc(var(--i, 0) * 50ms); }
+.ntile:hover { transform: translateY(-3px); border-color: var(--accent); }
+.nlabel { display: block; color: var(--muted); font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.ntile b { display: inline-block; margin-top: 4px; font: 800 46px/1 var(--display); }
+.nsub { color: var(--muted); font-size: 16px; margin-left: 4px; }
+.awardgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.award { border: 1px solid var(--line); border-left: 4px solid var(--team); border-radius: 8px; background: var(--panel); padding: 14px 16px; min-height: 112px; transition: transform .2s, background .2s, box-shadow .2s, border-color .2s; animation: rise .45s ease backwards; animation-delay: calc(var(--i, 0) * 45ms); }
+.award:hover { transform: translateY(-3px); border-color: var(--team); background: color-mix(in srgb, var(--team) 12%, var(--panel)); box-shadow: 0 10px 26px color-mix(in srgb, var(--team) 32%, transparent); }
+.award.none { opacity: .5; border-left-color: var(--line); }
+.award.none:hover { transform: none; box-shadow: none; background: var(--panel); border-color: var(--line); }
+.awlabel { color: var(--muted); font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.awname { display: flex; align-items: center; gap: 10px; margin: 8px 0 9px; font: 700 20px/1.2 var(--body); min-width: 0; }
+.awname span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.awmeta { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; color: var(--muted); font-size: 13px; }
+.awmeta em { font-style: normal; font-weight: 700; color: var(--text); background: color-mix(in srgb, var(--team) 26%, transparent); border: 1px solid color-mix(in srgb, var(--team) 60%, transparent); border-radius: 999px; padding: 1px 11px; font-size: 13px; }
+.award.none .awmeta em { background: transparent; border-color: var(--line); color: var(--muted); }
+.recs { border: 1px solid var(--line); border-radius: 8px; background: var(--panel); overflow: hidden; }
+.rec { display: grid; grid-template-columns: 170px 130px minmax(0, 1fr); gap: 14px; align-items: baseline; padding: 12px 16px; border-bottom: 1px solid var(--line); border-left: 4px solid var(--team, var(--line)); transition: background .15s; }
+.rec:last-child { border-bottom: 0; }
+.rec:hover { background: color-mix(in srgb, var(--team, #657080) 14%, var(--panel)); }
+.rlabel { color: var(--muted); font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.rval { font: 700 24px/1 var(--display); }
+.rdet { color: var(--muted); font-size: 14px; overflow-wrap: anywhere; }
+.gridwrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+table.sgrid { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 420px; }
+.sgrid th, .sgrid td { padding: 3px 3px; text-align: center; border-bottom: 1px solid var(--line); }
 .sgrid tbody tr:last-child td { border-bottom: 0; }
-.sgrid th { background: var(--panel2); color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .06em; cursor: default; }
-.sgrid th.dn, .sgrid td.dn { position: sticky; left: 0; z-index: 1; text-align: left; padding-left: 12px; min-width: 200px; background: var(--panel); border-right: 1px solid var(--line); }
+.sgrid th { background: var(--panel2); color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .06em; padding: 9px 3px; }
+.sgrid th.dn, .sgrid td.dn { position: sticky; left: 0; z-index: 1; text-align: left; padding-left: 14px; min-width: 150px; background: var(--panel); border-right: 1px solid var(--line); }
 .sgrid th.dn { background: var(--panel2); z-index: 2; }
 .sgrid tbody tr:hover td.dn { background: color-mix(in srgb, var(--team) 24%, var(--panel)); }
+.sgrid td.dn { white-space: nowrap; font-weight: 600; }
+.sgrid td.dn i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--team); margin-right: 9px; }
 .sgrid td.pt { padding: 0 14px; font: 700 20px var(--display); }
 .sgrid tbody tr[data-driver] { cursor: pointer; }
-.cell { display: block; min-width: 46px; margin: 2px auto; padding: 5px 0; border-radius: 5px; font: 700 15px/1 var(--display); letter-spacing: .02em; transition: transform .12s; }
+.cell { display: block; min-width: 42px; margin: 2px auto; padding: 5px 0; border-radius: 5px; font: 700 14px/1 var(--display); letter-spacing: .02em; transition: transform .12s; }
 .sgrid tbody tr:hover .cell { transform: scale(1.08); }
 .c1 { background: #ffd23f; color: #17130a; box-shadow: 0 0 10px rgba(255,210,63,.45); }
 .c2 { background: #c9d1e0; color: #11141b; }
@@ -303,17 +336,52 @@ table.sgrid { border-collapse: separate; border-spacing: 0; width: 100%; min-wid
 .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px; color: var(--muted); font-size: 13px; }
 .legend span { display: inline-flex; align-items: center; gap: 6px; }
 .legend i { width: 14px; height: 14px; border-radius: 3px; }
-.tmgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
-.tmcard { border: 1px solid var(--line); border-top: 4px solid var(--team); background: var(--panel); border-radius: 8px; padding: 14px 16px 12px; cursor: pointer; transition: transform .2s, box-shadow .2s, background .2s, border-color .2s; }
-.tmcard:hover, .tmcard:focus-visible { transform: translateY(-4px); border-color: var(--team); background: color-mix(in srgb, var(--team) 12%, var(--panel)); box-shadow: 0 12px 28px color-mix(in srgb, var(--team) 35%, transparent); outline: none; }
-.tmhead { display: flex; align-items: center; gap: 9px; margin-bottom: 10px; font: 700 20px var(--display); text-transform: uppercase; letter-spacing: .02em; }
-.tmvs { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; align-items: start; }
-.tmp { min-width: 0; }
-.tmp b { display: block; font-weight: 700; overflow-wrap: anywhere; line-height: 1.2; }
-.tmp span { color: var(--muted); font-size: 13px; }
-.tmp.r { text-align: right; }
-.tmscore { text-align: center; margin: 6px 0 10px; font: 800 40px/1 var(--display); letter-spacing: .04em; }
-.tmcard .ssub { display: block; margin-top: 8px; }
+.tmlist { display: grid; gap: 10px; }
+.tmrow { display: grid; grid-template-columns: 170px minmax(0, 1fr) 190px minmax(0, 1fr); align-items: center; gap: 14px; border: 1px solid var(--line); border-left: 4px solid var(--team); background: var(--panel); border-radius: 8px; padding: 12px 16px; cursor: pointer; transition: transform .2s, box-shadow .2s, background .2s, border-color .2s; animation: rise .45s ease backwards; animation-delay: calc(var(--i, 0) * 40ms); }
+.tmrow:hover, .tmrow:focus-visible { transform: translateX(4px); border-color: var(--team); background: color-mix(in srgb, var(--team) 12%, var(--panel)); box-shadow: 0 8px 24px color-mix(in srgb, var(--team) 30%, transparent); outline: none; }
+.tmteam { display: flex; align-items: center; gap: 9px; font: 700 20px var(--display); text-transform: uppercase; letter-spacing: .02em; }
+.tmside { min-width: 0; }
+.tmside b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tmside span { color: var(--muted); font-size: 13px; }
+.tmside.b { text-align: right; }
+.tmmid { text-align: center; }
+.tmscore { margin-bottom: 7px; font: 800 28px/1 var(--display); letter-spacing: .04em; }
+@media (max-width: 900px) { .awardgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 760px) {
+  .tmrow { grid-template-columns: 1fr 1fr; grid-template-areas: "t t" "a b" "m m"; row-gap: 8px; }
+  .tmteam { grid-area: t; } .tmside.a { grid-area: a; } .tmside.b { grid-area: b; } .tmmid { grid-area: m; }
+  .rec { grid-template-columns: 1fr; gap: 2px; }
+}
+@media (max-width: 560px) { .awardgrid { grid-template-columns: 1fr; } .ntile b { font-size: 38px; } .seg { max-width: 100%; } .seg button { padding: 6px 11px; font-size: 15px; letter-spacing: .03em; } }
+
+/* driver cards (FIFA-style) */
+.cardgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(206px, 1fr)); gap: 26px 18px; justify-items: center; margin-top: 18px; perspective: 1100px; }
+.dtools + .cardgrid { margin-top: 20px; }
+.dcard { position: relative; width: 100%; max-width: 244px; aspect-ratio: 5 / 7.3; border-radius: 18px; cursor: pointer; --rx: 0deg; --ry: 0deg; --mx: 50%; --my: 30%; transform: rotateX(var(--rx)) rotateY(var(--ry)); transition: transform .18s ease-out, box-shadow .25s; box-shadow: 0 12px 28px rgba(0,0,0,.55), 0 0 0 1px color-mix(in srgb, var(--team) 55%, #000); animation: rise .5s ease backwards; animation-delay: calc(var(--i, 0) * 35ms); outline: none; }
+.dcard:hover, .dcard:focus-visible { transform: translateY(-6px) rotateX(var(--rx)) rotateY(var(--ry)); box-shadow: 0 22px 54px color-mix(in srgb, var(--team) 50%, transparent), 0 0 0 2px var(--team); }
+.noanim .dcard { animation: none; }
+.dface { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; display: flex; flex-direction: column; padding: 15px 15px 14px; background: linear-gradient(180deg, color-mix(in srgb, var(--team) 84%, #0b0d15) 0%, color-mix(in srgb, var(--team) 46%, #0b0d15) 40%, #0b0d15 80%); }
+.dface::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(115deg, rgba(255,255,255,.06) 0 2px, transparent 2px 15px); pointer-events: none; }
+.dface::after { content: ''; position: absolute; inset: 6px; border: 1px solid rgba(255,255,255,.22); border-radius: 13px; pointer-events: none; }
+.dc-top { position: relative; display: flex; align-items: flex-start; gap: 8px; color: var(--ink); }
+.dc-ovr { font: italic 800 54px/.9 var(--numfont); letter-spacing: -.02em; }
+.dc-tier { margin-top: 4px; font: 700 12px var(--body); letter-spacing: .14em; }
+.dc-logo { margin-left: auto; }
+.dc-logo .tlogo { width: 36px; height: 36px; }
+.dc-rank { position: absolute; top: 0; right: 46px; font: 700 12px var(--body); letter-spacing: .06em; color: var(--ink); opacity: .85; }
+.dc-mid { position: relative; flex: 1; display: grid; place-items: center; min-height: 0; }
+.dc-num { font: italic 800 clamp(64px, 7vw, 92px)/1 var(--numfont); color: color-mix(in srgb, var(--team) 22%, transparent); -webkit-text-stroke: 2.5px var(--team); filter: drop-shadow(0 6px 14px rgba(0,0,0,.45)); }
+.dc-name { position: relative; text-align: center; margin-top: 4px; font: italic 800 23px/1.05 var(--numfont); text-transform: uppercase; color: #fff; overflow-wrap: anywhere; text-shadow: 0 2px 8px rgba(0,0,0,.6); }
+.dc-sub { position: relative; text-align: center; margin: 3px 0 9px; color: var(--muted); font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+.dc-stats { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px 4px; padding-top: 9px; border-top: 1px solid rgba(255,255,255,.2); text-align: center; }
+.dc-stats b { display: block; font: italic 800 21px/1 var(--numfont); color: #fff; }
+.dc-stats b.hi { color: #ffd23f; text-shadow: 0 0 10px rgba(255,210,63,.55); }
+.dc-stats b.lo { color: var(--muted); }
+.dc-stats span { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: .1em; }
+.dc-shine { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .25s; mix-blend-mode: overlay; background: radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,.7), rgba(255,255,255,0) 46%), linear-gradient(115deg, transparent 18%, rgba(255,255,255,.28) 32%, rgba(110,200,255,.35) 42%, rgba(255,110,200,.35) 52%, rgba(255,230,110,.3) 60%, transparent 74%); background-size: 100% 100%, 240% 240%; background-position: 0 0, var(--mx) var(--my); }
+.dcard:hover .dc-shine, .dcard:focus-visible .dc-shine { opacity: 1; }
+.dcard.unrated .dface { filter: grayscale(.7) brightness(.75); }
+.dcard.unrated .dc-ovr { font-size: 44px; }
 
 /* season progress bar */
 .pbar { display: block; height: 6px; margin: 8px 0 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
@@ -469,9 +537,12 @@ const RACES = [
   { code: "CHN", name: "Chinese Grand Prix", circuit: "Shanghai International Circuit", date: "2026-11-08", laps: 20,
      results: ["Tr0uble", "D13SEL", "NL Savage", "2006 Honda Civic", "Floppy", "Rakyesh", "Baileydipalma", "Bondafide Medic"], dnf: [],
      pole: "NL Savage", fastestLap: "2006 Honda Civic", times: ["33:04.809", "+0.924", "+12.195", "+15.552", "+34.473", "+1:04.194", "1:00.645", "+1 LAP"] },
+  
+  { code: "JPN", name: "Japanese Grand Prix", circuit: "Suzuka International Circuit", date: "2026-11-14", laps: 19,
+     results: ["NL Savage", "D13SEL", "Baileydipalma", "Dismaw", "Derk", "Mateusz Benek", "Bean"], dnf: ["Tr0uble", "Floppy", "therealrealromanchu"],
+     pole: "Baileydipalma", fastestLap: "D13SEL", times: ["32:20.932", "+18.439", "+29.805", "+32.116", "+35.116", "+1 LAP", "+1 LAP"] },
 
   // Upcoming rounds: add each date as "YYYY-MM-DD" (and laps if you like). They stay blacked out until you add results.
-  { code: "JPN", name: "Japanese Grand Prix", circuit: "Suzuka International Racing Course", date: "2026-11-14" },
   { code: "BHR", name: "Bahrain Grand Prix", circuit: "Bahrain International Circuit", date: "2026-11-15" },
   { code: "BCN", name: "Spanish Grand Prix", circuit: "Barcelona-Catalunya Circuit", date: "2026-11-21" },
   { code: "ITA", name: "Italian Grand Prix", circuit: "Autodromo Nazionale Monza", date: "2026-11-22" },
@@ -519,7 +590,7 @@ const RACES = [
   </section>
 
   <section id="page-drivers" class="hidden">
-    <div class="dtools"><input id="dsearch" type="search" placeholder="Search drivers, numbers or teams…" aria-label="Search drivers or teams" autocomplete="off"><button type="button" class="btn" id="h2hbtn">Head to head</button></div>
+    <div class="dtools"><div class="seg" id="dview"><button type="button" data-dview="teams" aria-pressed="true">By team</button><button type="button" data-dview="cards" aria-pressed="false">Driver cards</button></div><input id="dsearch" type="search" placeholder="Search drivers, numbers or teams…" aria-label="Search drivers or teams" autocomplete="off"><button type="button" class="btn" id="h2hbtn">Head to head</button></div>
     <div class="driversgrid" id="driver-grid"></div>
   </section>
 </main>
@@ -1019,7 +1090,7 @@ const RACES = [
     html += `<h2 class="small">Classification</h2><p class="note">${finishers.length} finished${retired.length?`, ${retired.length} retired`:''}</p><div class="tablewrap"><table><thead><tr><th>Pos</th><th>Driver</th><th style="text-align:right">Time / gap</th><th style="text-align:right">Pts</th></tr></thead><tbody>${rows}${unknownRows}${dnfRows}</tbody></table></div>${circuit}`;
     $('race-detail').innerHTML = html;
   }
-  // ---- stats page: awards, season grid, teammate battles ----
+  // ---- stats page: overview / season grid / teammates ----
   function marginOf(r) {
     const t = Array.isArray(r.times) ? String(r.times[1] || '').trim().replace(/^\+/, '') : '';
     if (!t || /dnf/i.test(t)) return null;
@@ -1038,45 +1109,65 @@ const RACES = [
     });
     return {a, b};
   }
-  function renderStatsPage() {
-    const box = $('statspage');
-    if (!racesDone) { box.innerHTML = '<div class="empty"><strong>No results yet</strong>Awards, the season grid and teammate battles fill in once a race has results.</div>'; return; }
-    const pool = driverTable.filter(d => d.races > 0);
-    const cards = [];
+  let statsView = 'overview';
+  function statsOverview(pool) {
+    // league in numbers
+    const winners = new Set(), poleSitters = new Set();
+    let finN = 0, dnfN = 0, lapsN = 0;
+    doneRaces.forEach(r => {
+      const w = driverMap.get(norm(r.results[0])); if (w) winners.add(w.id);
+      const po = driverMap.get(norm(r.pole)); if (po) poleSitters.add(po.id);
+      finN += r.results.filter(nm => driverMap.has(norm(nm))).length;
+      dnfN += (r.dnf || []).filter(nm => driverMap.has(norm(nm))).length;
+      lapsN += Number(r.laps) || 0;
+    });
+    const tiles = [
+      ['Rounds done', racesDone, ` / ${races.length}`], ['Winners', winners.size, ''], ['Pole sitters', poleSitters.size, ''],
+      ['Finishes', finN, ''], ['Retirements', dnfN, ''], lapsN ? ['Laps raced', lapsN, ''] : ['Drivers raced', pool.length, '']
+    ].map(([l, v, sub], i) => `<div class="ntile" style="--i:${i}"><span class="nlabel">${esc(l)}</span><b data-count="${v}">${v}</b><span class="nsub">${esc(sub)}</span></div>`).join('');
+
+    // awards (championship order, so a tie is led by whoever is higher up the table)
+    const nameList = list => list.slice(1, 3).map(d => d.name).join(', ') + (list.length > 3 ? ` +${list.length - 3}` : '');
     let n = 0;
-    const mk = (label, name, sub, colour, logo) => cards.push(`<div class="scard" style="--team:${esc(colour)};--i:${n++}"><span class="slabel">${esc(label)}</span><strong>${logo || ''}<span>${esc(name)}</span></strong><span class="ssub">${sub}</span></div>`);
-    const nameOf = list => list.length === 1 ? list[0].name : list.slice(0, 2).map(d => d.name).join(' / ') + (list.length > 2 ? ` +${list.length - 2}` : '');
-    const most = (label, valFn, subFn) => {
+    const award = (label, lead, pill, sub, colour, logo) => `<div class="award ${lead ? '' : 'none'}" style="--team:${esc(colour)};--i:${n++}"><span class="awlabel">${esc(label)}</span><div class="awname">${logo || ''}<span>${esc(lead || 'Not awarded yet')}</span></div><div class="awmeta"><em>${esc(pill)}</em>${sub ? `<span>${esc(sub)}</span>` : ''}</div></div>`;
+    const most = (label, valFn, unit) => {
       const mx = Math.max(0, ...pool.map(valFn));
-      if (mx < 1) return;
+      if (mx < 1) return award(label, '', '—', '', '#657080');
       const list = pool.filter(d => valFn(d) === mx);
-      mk(label, nameOf(list), esc(subFn(mx)) + (list.length > 1 ? ' · shared' : ''), teamColour(list[0]), logoHTML(list[0].teamData));
+      return award(label, list[0].name, `${mx} ${unit}${mx > 1 ? 's' : ''}`, list.length > 1 ? `tied with ${nameList(list)}` : '', teamColour(list[0]), logoHTML(list[0].teamData));
     };
-    most('Most wins', d => d.wins, v => `${v} win${v > 1 ? 's' : ''}`);
-    most('Most poles', d => d.poles, v => `${v} pole${v > 1 ? 's' : ''}`);
-    most('Most fastest laps', d => d.fl, v => `${v} fastest lap${v > 1 ? 's' : ''}`);
-    most('Most podiums', d => d.podiums, v => `${v} podium${v > 1 ? 's' : ''}`);
     const avgs = pool.map(d => { const f = history.get(d.id).filter(h => h.pos).map(h => h.pos); return {d, n: f.length, avg: f.length ? f.reduce((a, b) => a + b, 0) / f.length : Infinity}; }).filter(x => x.n >= Math.min(2, racesDone));
+    let consistent = award('Most consistent', '', '—', '', '#657080');
     if (avgs.length) {
       const best = Math.min(...avgs.map(x => x.avg));
       const list = avgs.filter(x => x.avg === best).map(x => x.d);
-      mk('Most consistent', nameOf(list), `average finish P${best.toFixed(1)}`, teamColour(list[0]), logoHTML(list[0].teamData));
+      consistent = award('Most consistent', list[0].name, `avg finish P${best.toFixed(1)}`, list.length > 1 ? `tied with ${nameList(list)}` : '', teamColour(list[0]), logoHTML(list[0].teamData));
     }
     const tt = teamTable[0];
-    if (tt && tt.points > 0) mk('Top team', tt.name, `${tt.points} points`, tt.colour, logoHTML(tt));
-    let poles = 0, conv = 0;
-    doneRaces.forEach(r => { const po = driverMap.get(norm(r.pole)), wi = driverMap.get(norm(r.results[0])); if (po) { poles++; if (wi && wi.id === po.id) conv++; } });
-    if (poles) mk('Pole to win', `${conv} of ${poles}`, `${Math.round(conv / poles * 100)}% of pole sitters went on to win`, accent);
+    const topTeam = tt && tt.points > 0 ? award('Top team', tt.name, `${tt.points} pts`, tt.members.map(d => d.name).join(' + '), tt.colour, logoHTML(tt)) : award('Top team', '', '—', '', '#657080');
+    const awards = [most('Most wins', d => d.wins, 'win'), most('Most poles', d => d.poles, 'pole'), most('Most fastest laps', d => d.fl, 'fastest lap'), most('Most podiums', d => d.podiums, 'podium'), consistent, topTeam].join('');
+
+    // records
+    const recs = [];
+    const rec = (label, val, det, colour) => recs.push(`<div class="rec" style="--team:${esc(colour || '#657080')}"><span class="rlabel">${esc(label)}</span><span class="rval">${esc(val)}</span><span class="rdet">${esc(det)}</span></div>`);
     const margins = doneRaces.map(r => ({r, m: marginOf(r), w: driverMap.get(norm(r.results[0])), s: driverMap.get(norm(r.results[1]))})).filter(x => x.m && x.w && x.s);
     if (margins.length) {
       const close = margins.reduce((a, b) => b.m.secs < a.m.secs ? b : a);
-      mk('Closest finish', close.m.text, `${close.w.name} over ${close.s.name} · ${close.r.name}`, teamColour(close.w), logoHTML(close.w.teamData));
+      rec('Closest finish', close.m.text, `${close.w.name} over ${close.s.name} · ${close.r.name}`, teamColour(close.w));
       const dom = margins.reduce((a, b) => b.m.secs > a.m.secs ? b : a);
-      if (dom !== close) mk('Most dominant win', dom.m.text, `${dom.w.name} over ${dom.s.name} · ${dom.r.name}`, teamColour(dom.w), logoHTML(dom.w.teamData));
+      if (dom !== close) rec('Biggest winning margin', dom.m.text, `${dom.w.name} over ${dom.s.name} · ${dom.r.name}`, teamColour(dom.w));
     }
-    most('Most DNFs', d => d.dnfs, v => `${v} retirement${v > 1 ? 's' : ''}`);
+    let poles = 0, conv = 0;
+    doneRaces.forEach(r => { const po = driverMap.get(norm(r.pole)), wi = driverMap.get(norm(r.results[0])); if (po) { poles++; if (wi && wi.id === po.id) conv++; } });
+    if (poles) rec('Pole to win', `${conv} of ${poles}`, `${Math.round(conv / poles * 100)}% of pole sitters went on to win the race`);
+    const dnfMax = Math.max(0, ...pool.map(d => d.dnfs));
+    if (dnfMax) { const list = pool.filter(d => d.dnfs === dnfMax); rec('Most retirements', `${dnfMax}`, list.slice(0, 3).map(d => d.name).join(', ') + (list.length > 3 ? ` +${list.length - 3}` : ''), teamColour(list[0])); }
 
-    // season grid
+    return `<section class="statsec"><h2 class="small">League in numbers</h2><div class="numgrid">${tiles}</div></section>`
+      + `<section class="statsec"><h2 class="small">Awards</h2><div class="awardgrid">${awards}</div></section>`
+      + (recs.length ? `<section class="statsec"><h2 class="small">Records</h2><div class="recs">${recs.join('')}</div></section>` : '');
+  }
+  function statsGrid(pool) {
     const cell = h => {
       if (h.dnf) return '<span class="cell cd">DNF</span>';
       if (!h.pos) return '<span class="cell cx">—</span>';
@@ -1086,30 +1177,100 @@ const RACES = [
       return `<span class="cell cn">P${p}</span>`;
     };
     const heads = doneRaces.map(r => `<th title="${esc(r.name)}">${esc(r.code || '')}</th>`).join('');
-    const grid = pool.map((d, i) => `<tr data-driver="${d.id}" tabindex="0" style="--team:${esc(teamColour(d))};--i:${i}"><td class="dn">${driverCell(d)}</td>${history.get(d.id).map(h => `<td title="${esc(h.race.name)}">${cell(h)}</td>`).join('')}<td class="pt">${d.points}</td></tr>`).join('');
+    const rows = pool.map((d, i) => `<tr data-driver="${d.id}" tabindex="0" style="--team:${esc(teamColour(d))};--i:${i}"><td class="dn"><i></i>${esc(d.name)}</td>${history.get(d.id).map(h => `<td title="${esc(h.race.name)}">${cell(h)}</td>`).join('')}<td class="pt">${d.points}</td></tr>`).join('');
     const legend = '<div class="legend"><span><i class="c1"></i>P1</span><span><i class="c2"></i>P2</span><span><i class="c3"></i>P3</span><span><i style="background:rgba(46,204,140,.4)"></i>Points finish</span><span><i class="cn"></i>Outside the points</span><span><i class="cd"></i>DNF</span></div>';
-
-    // teammate battles
+    return `<section class="statsec"><h2 class="small">Season grid</h2><div class="gridwrap"><table class="sgrid"><thead><tr><th class="dn">Driver</th>${heads}<th>Pts</th></tr></thead><tbody>${rows}</tbody></table></div>${legend}</section>`;
+  }
+  function statsTeams() {
     const battles = teamTable.map(t => {
       const m = [...t.members].sort((x, y) => stats.get(y.id).points - stats.get(x.id).points).slice(0, 2);
       return m.length === 2 ? {t, A: m[0], B: m[1]} : null;
     }).filter(Boolean);
-    const tm = battles.map(({t, A, B}, i) => {
+    const rows = battles.map(({t, A, B}, i) => {
       const {a, b} = duel(A, B);
       const pa = a + b ? Math.round(a / (a + b) * 100) : 50;
       const cb = `color-mix(in srgb, ${t.colour} 50%, #fff)`;
-      const lead = a === b ? 'Level on track so far' : `${a > b ? A.name : B.name} is ahead of their teammate`;
-      return `<div class="tmcard" data-pair="${A.id},${B.id}" tabindex="0" role="button" aria-label="Open ${esc(A.name)} vs ${esc(B.name)}" style="--team:${esc(t.colour)};--ca:${esc(t.colour)};--cb:${cb};--i:${i}"><div class="tmhead">${logoHTML(t)}${esc(t.name)}</div><div class="tmvs"><div class="tmp"><b>${esc(A.name)}</b><span>${stats.get(A.id).points} pts</span></div><div class="tmp r"><b>${esc(B.name)}</b><span>${stats.get(B.id).points} pts</span></div></div><div class="tmscore">${a} – ${b}</div><div class="hbar ${a + b ? '' : 'none'}"><u class="ba" style="width:${pa}%"></u><u class="bb" style="width:${100 - pa}%"></u></div><span class="ssub">${esc(lead)}</span></div>`;
+      return `<div class="tmrow" data-pair="${A.id},${B.id}" tabindex="0" role="button" aria-label="Open ${esc(A.name)} vs ${esc(B.name)}" style="--team:${esc(t.colour)};--ca:${esc(t.colour)};--cb:${cb};--i:${i}"><div class="tmteam">${logoHTML(t)}${esc(t.name)}</div><div class="tmside a"><b>${esc(A.name)}</b><span>${stats.get(A.id).points} pts</span></div><div class="tmmid"><div class="tmscore">${a} – ${b}</div><div class="hbar ${a + b ? '' : 'none'}"><u class="ba" style="width:${pa}%"></u><u class="bb" style="width:${100 - pa}%"></u></div></div><div class="tmside b"><b>${esc(B.name)}</b><span>${stats.get(B.id).points} pts</span></div></div>`;
     }).join('');
+    return `<section class="statsec"><h2 class="small">Teammate battles</h2><p class="note">Who finishes ahead of their teammate, race by race. Click a row for the full head-to-head.</p>${rows ? `<div class="tmlist">${rows}</div>` : '<div class="empty">No team has two drivers yet.</div>'}</section>`;
+  }
+  function renderStatsPage() {
+    const box = $('statspage');
+    if (!racesDone) { box.innerHTML = '<div class="empty"><strong>No results yet</strong>Stats fill in once a race has results.</div>'; return; }
+    const pool = driverTable.filter(d => d.races > 0);
+    const seg = `<div class="stathead"><div class="seg" id="sview">${[['overview', 'Overview'], ['grid', 'Season grid'], ['teams', 'Teammates']].map(([k, l]) => `<button type="button" data-sview="${k}" aria-pressed="${statsView === k}">${l}</button>`).join('')}</div></div>`;
+    box.innerHTML = seg + (statsView === 'grid' ? statsGrid(pool) : statsView === 'teams' ? statsTeams() : statsOverview(pool));
+  }
+  function animateCounts() {
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.querySelectorAll('#statspage [data-count]').forEach(el => {
+      const to = Number(el.dataset.count);
+      if (!to) return;
+      const t0 = performance.now();
+      const tick = t => { const k = Math.min(1, (t - t0) / 800); el.textContent = Math.round(to * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(tick); };
+      el.textContent = 0;
+      requestAnimationFrame(tick);
+    });
+  }
+  $('statspage').addEventListener('click', e => {
+    const b = e.target.closest('[data-sview]');
+    if (!b) return;
+    statsView = b.dataset.sview;
+    renderStatsPage();
+    animateCounts();
+  });
 
-    box.innerHTML = `<section class="statsec"><h2 class="small">Season awards</h2><p class="note">Worked out from every result you've entered.</p><div class="summary" style="margin-top:0">${cards.join('')}</div></section>`
-      + `<section class="statsec"><h2 class="small">Season grid</h2><p class="note">Every finish, round by round. Click a driver for their profile.</p><div class="gridwrap"><table class="sgrid"><thead><tr><th class="dn">Driver</th>${heads}<th>Pts</th></tr></thead><tbody>${grid}</tbody></table></div>${legend}</section>`
-      + (tm ? `<section class="statsec"><h2 class="small">Teammate battles</h2><p class="note">Who finishes ahead of their teammate. Click a card for the full head-to-head.</p><div class="tmgrid">${tm}</div></section>` : '');
+  // ---- driver ratings + cards ----
+  // Every score is 0-1, nudged toward "average" until a driver has a few races, then mapped to 45-99.
+  function rateDriver(d) {
+    const st = stats.get(d.id), n = st.races;
+    if (!n) return null;
+    const fins = history.get(d.id).filter(h => h.pos);
+    const shrink = v => (v * n + 0.35) / (n + 1);
+    const avgNorm = fins.length ? 1 - (fins.reduce((a, h) => a + h.pos, 0) / fins.length - 1) / Math.max(1, drivers.length - 1) : 0;
+    const raw = {
+      PAC: 0.7 * (st.poles / n) + 0.3 * (st.fl / n),
+      RAC: avgNorm,
+      WIN: 0.6 * (st.wins / n) + 0.4 * (st.podiums / n),
+      CON: fins.filter(h => h.pos <= POINTS.length).length / n,
+      REL: 1 - st.dnfs / n,
+      PTS: Math.min(1, st.points / n / POINTS[0])
+    };
+    const r = {};
+    Object.keys(raw).forEach(k => { r[k] = Math.max(45, Math.min(99, Math.round(45 + 54 * shrink(raw[k])))); });
+    r.ovr = Math.round(0.22 * r.WIN + 0.20 * r.RAC + 0.16 * r.PAC + 0.18 * r.PTS + 0.14 * r.CON + 0.10 * r.REL);
+    r.tier = r.ovr >= 85 ? 'ELITE' : r.ovr >= 75 ? 'PRO' : r.ovr >= 65 ? 'RISING' : 'ROOKIE';
+    return r;
+  }
+  function cardHTML(d, rank, i, r) {
+    const col = teamColour(d);
+    const nm = d.name.length > 15 ? 'font-size:15px' : d.name.length > 11 ? 'font-size:18px' : '';
+    const stat = k => `<div><b class="${r ? (r[k] >= 85 ? 'hi' : r[k] < 60 ? 'lo' : '') : 'lo'}">${r ? r[k] : '—'}</b><span>${k}</span></div>`;
+    return `<div class="dcard ${r ? '' : 'unrated'}" data-driver="${d.id}" tabindex="0" role="button" aria-label="Open ${esc(d.name)} profile" style="--team:${esc(col)};--ink:${inkFor(col)};--i:${i}"><div class="dface">`
+      + `<div class="dc-top"><div><div class="dc-ovr">${r ? r.ovr : '—'}</div><div class="dc-tier">${r ? r.tier : 'UNRATED'}</div></div>${r ? `<span class="dc-rank">#${rank}</span>` : ''}<div class="dc-logo">${logoHTML(d.teamData)}</div></div>`
+      + `<div class="dc-mid"><div class="dc-num">${d.number !== '' ? esc(d.number) : ''}</div></div>`
+      + `<div class="dc-name" style="${nm}">${esc(d.name)}</div><div class="dc-sub">${esc(d.teamData.name)}</div>`
+      + `<div class="dc-stats">${['PAC', 'RAC', 'WIN', 'CON', 'REL', 'PTS'].map(stat).join('')}</div><div class="dc-shine"></div></div></div>`;
   }
 
+  // ---- drivers page: team view or card view, with search ----
   let driversAnimated = false;
+  let driversView = 'teams';
   function renderDrivers() {
     const q = norm($('dsearch').value);
+    const grid = $('driver-grid');
+    grid.classList.toggle('noanim', driversAnimated);
+    grid.className = (driversView === 'cards' ? 'cardgrid' : 'driversgrid') + (driversAnimated ? ' noanim' : '');
+    document.querySelectorAll('#dview [data-dview]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.dview === driversView)));
+    if (driversView === 'cards') {
+      const ranked = drivers.map(d => ({d, r: rateDriver(d)})).sort((x, y) => (y.r ? y.r.ovr : -1) - (x.r ? x.r.ovr : -1) || stats.get(y.d.id).points - stats.get(x.d.id).points);
+      let rk = 0;
+      ranked.forEach(x => { if (x.r) x.rank = ++rk; });
+      const list = q ? ranked.filter(({d}) => norm(d.name).includes(q) || norm(d.teamData.name).includes(q) || String(d.number) === q) : ranked;
+      grid.innerHTML = list.length ? list.map(({d, r, rank}, i) => cardHTML(d, rank, i, r)).join('') : `<div class="empty emptydrivers" style="grid-column:1/-1;width:100%"><strong>${q ? 'No matches' : 'No drivers added yet'}</strong>${q ? 'Try a different name, number or team.' : 'Add your drivers in the DRIVERS section at the top of this HTML file.'}</div>`;
+      driversAnimated = true;
+      return;
+    }
     let groups = TEAMS.map(team => {
       const members = drivers.filter(d => norm(d.team) === norm(team.name));
       return {...team, colour: team.colour || accent, members, total: members.length};
@@ -1117,12 +1278,34 @@ const RACES = [
     const unassigned = drivers.filter(d => !teamMap.has(norm(d.team)));
     if (unassigned.length) groups.push({name:'Other / unassigned', colour:'#657080', members:unassigned, total:unassigned.length});
     if (q) groups = groups.map(g => norm(g.name).includes(q) ? g : {...g, members: g.members.filter(d => norm(d.name).includes(q) || String(d.number) === q)}).filter(g => g.members.length);
-    const grid = $('driver-grid');
-    grid.classList.toggle('noanim', driversAnimated);
     grid.innerHTML = groups.length ? groups.map((team, ti) => `<article class="teamcard" style="--team:${esc(team.colour)};--ink:${inkFor(team.colour)};--i:${ti}"><div class="carstage">${carHTML(team)}</div><header class="teamhead">${logoHTML(team)}<h3>${esc(team.name)}</h3><span class="teamcount">${team.total} driver${team.total===1?'':'s'}</span></header><div class="teamdrivers">${team.members.length ? team.members.map(d => `<div class="driverrow" data-driver="${d.id}" tabindex="0" role="button" aria-label="Open ${esc(d.name)} profile"><span class="number">${d.number!==''?esc(d.number):'—'}</span>${logoHTML(d.teamData)}<span class="drivername">${esc(d.name)}</span><span class="rowright">${dstats(d)}${formStrip(d)}</span></div>`).join('') : '<div class="driverrow"><span class="drivername dnf">No drivers yet</span></div>'}</div></article>`).join('') : `<div class="empty emptydrivers"><strong>${q ? 'No matches' : 'No drivers added yet'}</strong>${q ? 'Try a different name, number or team.' : 'Add your teams and drivers in the TEAMS and DRIVERS sections at the top of this HTML file.'}</div>`;
     driversAnimated = true;
   }
   $('dsearch').addEventListener('input', renderDrivers);
+  $('dview').addEventListener('click', e => {
+    const b = e.target.closest('[data-dview]');
+    if (!b || b.dataset.dview === driversView) return;
+    driversView = b.dataset.dview;
+    driversAnimated = false;
+    renderDrivers();
+  });
+  // holographic tilt on the driver cards
+  const noTilt = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  $('driver-grid').addEventListener('pointermove', e => {
+    if (noTilt() || e.pointerType === 'touch') return;
+    const c = e.target.closest('.dcard');
+    if (!c) return;
+    const r = c.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+    c.style.setProperty('--ry', ((px - 0.5) * 16).toFixed(1) + 'deg');
+    c.style.setProperty('--rx', ((0.5 - py) * 16).toFixed(1) + 'deg');
+    c.style.setProperty('--mx', (px * 100).toFixed(0) + '%');
+    c.style.setProperty('--my', (py * 100).toFixed(0) + '%');
+  });
+  $('driver-grid').addEventListener('pointerout', e => {
+    const c = e.target.closest && e.target.closest('.dcard');
+    if (c && !c.contains(e.relatedTarget)) { c.style.setProperty('--rx', '0deg'); c.style.setProperty('--ry', '0deg'); }
+  });
   function route() {
     const h = location.hash.replace('#', '');
     const page = ['standings', 'stats', 'drivers'].includes(h) ? h : 'results';
@@ -1135,9 +1318,10 @@ const RACES = [
     $('hero-sub').textContent = {
       results: `${LEAGUE.game} · ${LEAGUE.season}`,
       standings: `After ${racesDone} of ${races.length} rounds`,
-      stats: `Awards, records and the season grid after ${racesDone} of ${races.length} rounds`,
+      stats: `The league in numbers after ${racesDone} of ${races.length} rounds`,
       drivers: `${drivers.length} drivers across ${TEAMS.length} teams · click a driver for their season, or pit two against each other`
     }[page];
+    if (page === 'stats' && statsView === 'overview') animateCounts();
   }
   $('rounds').addEventListener('click', e => {
     const button = e.target.closest('[data-round]');
