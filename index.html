@@ -480,7 +480,7 @@ const LEAGUE = {
 // POINTS: what each finishing position scores (P1, P2, P3 ...). Standings fill in automatically from your race results.
 // Anyone who DNFs, or isn't in a race's results, scores 0 for that race.
 const POINTS = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1];
-const FASTEST_LAP_POINT = false;   // true = +1 point for fastest lap (only if that driver finishes in the top 10)
+const FASTEST_LAP_POINT = true;    // true = +1 point for fastest lap (only if that driver finishes in the top 10)
 
 // TEAM: name, colour (hex), logo = team logo image, car = side-profile image of the 2026 car
 // Put logos in a "logos" folder and cars in a "cars" folder next to this file.
@@ -501,24 +501,24 @@ const TEAMS = [
 
 // DRIVER: name, number, team (must match a team name above)
 const DRIVERS = [
-  { name: "NL Savage", number: 13, team: "McLaren" },
-  { name: "Rakyesh", number: 11, team: "Mercedes" },
-  { name: "Tr0uble", number: 16, team: "Red Bull" },
-  { name: "Baileydipalma", number: 3, team: "Mercedes" },
-  { name: "D13SEL", number: 72, team: "Alpine" },
-  { name: "2006 Honda Civic", number: 24, team: "Ferrari" },
-  { name: "Floppy", number: 48, team: "Alpine" },
-  { name: "Bondafide Medic", number: 52, team: "Cadillac" },
-  { name: "Dismaw", number: 99, team: "Red Bull" },
-  { name: "B-radd", number: 22, team: "Ferrari" },
-  { name: "The Renegade", number: 21, team: "McLaren" },
-  { name: "Rush v4", number: 4, team: "Audi" },
-  { name: "Mateusz Benek", number: 66, team: "Williams" },
-  { name: "Jonny", number: 44, team: "Aston Martin" },
-  { name: "Derk", number: 8, team: "Haas" },
-  { name: "therealrealromanchu", number: 43, team: "Racing Bulls" },
-  { name: "wrf", number: 2, team: "Cadillac" },
-  { name: "Bean", number: 88, team: "Haas" },
+  { name: "Satoru Kurosawa", number: 13, team: "McLaren" }, // NL Savage
+  { name: "William Heston", number: 11, team: "Mercedes" }, // Rakyesh
+  { name: "Illia Barinov", number: 16, team: "Red Bull" }, // Tr0uble
+  { name: "Bailey Dipalma", number: 3, team: "Mercedes" }, // Baileydipalma
+  { name: "Ash Bartlam", number: 72, team: "Alpine" }, // D13SEL
+  { name: "2006 Honda Civic", number: 24, team: "Ferrari" }, // 2006 Honda Civic
+  { name: "Floppy", number: 48, team: "Alpine" }, // Floppy, Gearheads
+  { name: "Jaydee Ellenburg", number: 52, team: "Cadillac" }, // Bondafide Medic
+  { name: "Dismaw", number: 99, team: "Red Bull" }, // Dismaw, Rex
+  { name: "B-radd", number: 22, team: "Ferrari" }, // B-radd
+  { name: "Joshua Storm", number: 21, team: "McLaren" }, // The Renegade
+  { name: "Rush v4", number: 4, team: "Audi" }, // Rush v4
+  { name: "Matteo Moretti", number: 66, team: "Williams" }, // Benjo18, Mateusz Benek
+  { name: "Johnny El Tank", number: 44, team: "Aston Martin" }, // Jonny
+  { name: "Derky Dingus", number: 8, team: "Haas" }, // Derk, Lbjnyy49
+  { name: "Roman Fernandez", number: 43, team: "Racing Bulls" }, // therealrealromanchu
+  { name: "wrf", number: 2, team: "Cadillac" }, // wrf
+  { name: "Benjamin Walker", number: 88, team: "Haas" }, // Bean
 ];
 
 // RACE: code, name, circuit, date, laps, results, dnf, pole, fastestLap, times, track (optional)
@@ -530,17 +530,17 @@ const DRIVERS = [
 // Leave results out until the race has been completed.
 const RACES = [
   { code: "AUS", name: "Australian Grand Prix", circuit: "Albert Park Circuit", date: "2026-11-07", laps: 26,
-    results: ["NL Savage", "Baileydipalma", "Rakyesh"],
-    dnf: ["D13SEL", "Dismaw"],
-    pole: "Baileydipalma", fastestLap: "Baileydipalma", times: ["36:04.318", "+2.114", "+1 LAP", "DNF", "DNF"] },
+    results: ["Satoru Kurosawa", "Bailey Dipalma", "William Heston"],
+    dnf: ["Ash Bartlam", "Dismaw"],
+    pole: "Bailey Dipalma", fastestLap: "Bailey Dipalma", times: ["36:04.318", "+2.114", "+1 LAP", "DNF", "DNF"] },
   
   { code: "CHN", name: "Chinese Grand Prix", circuit: "Shanghai International Circuit", date: "2026-11-08", laps: 20,
-     results: ["Tr0uble", "D13SEL", "NL Savage", "2006 Honda Civic", "Floppy", "Rakyesh", "Baileydipalma", "Bondafide Medic"], dnf: [],
+     results: ["Illia Barinov", "Ash Bartlam", "Satoru Kurosawa", "2006 Honda Civic", "Floppy", "William Heston", "Bailey Dipalma", "Jaydee Ellenburg"], dnf: [],
      pole: "NL Savage", fastestLap: "2006 Honda Civic", times: ["33:04.809", "+0.924", "+12.195", "+15.552", "+34.473", "+1:04.194", "1:00.645", "+1 LAP"] },
   
   { code: "JPN", name: "Japanese Grand Prix", circuit: "Suzuka International Circuit", date: "2026-11-14", laps: 19,
-     results: ["NL Savage", "D13SEL", "Baileydipalma", "Dismaw", "Derk", "Mateusz Benek", "Bean"], dnf: ["Tr0uble", "Floppy", "therealrealromanchu"],
-     pole: "Baileydipalma", fastestLap: "D13SEL", times: ["32:20.932", "+18.439", "+29.805", "+32.116", "+35.116", "+1 LAP", "+1 LAP"] },
+     results: ["Satoru Kurosawa", "Ash Bartlam", "Bailey Dipalma", "Dismaw", "Derky Dingus", "Matteo Moretti", "Benjamin Walker"], dnf: ["Illia Barinov", "Floppy", "Roman Fernandez"],
+     pole: "Bailey Dipalma", fastestLap: "Ash Bartlam", times: ["32:20.932", "+18.439", "+29.805", "+32.116", "+35.116", "+1 LAP", "+1 LAP"] },
 
   // Upcoming rounds: add each date as "YYYY-MM-DD" (and laps if you like). They stay blacked out until you add results.
   { code: "BHR", name: "Bahrain Grand Prix", circuit: "Bahrain International Circuit", date: "2026-11-15" },
