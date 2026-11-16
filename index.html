@@ -500,8 +500,11 @@ const TEAMS = [
 ];
 
 // DRIVER: name, number, team (must match a team name above)
+// team = the team the driver STARTED the season with.
+// moves (optional) = team changes, e.g. moves: [{ round: 5, team: "Ferrari" }] means from round 5 onward they drive for Ferrari.
+// Points from each race go to the team the driver was with in THAT race. Add more entries to moves for further switches.
 const DRIVERS = [
-  { name: "Satoru Kurosawa", number: 13, team: "McLaren" }, // NL Savage
+  { name: "Satoru Kurosawa", number: 13, team: "Cadillac", moves: [{ round: 2, team: "McLaren" }] }, // NL Savage
   { name: "William Heston", number: 11, team: "Mercedes" }, // Rakyesh
   { name: "Illia Barinov", number: 16, team: "Red Bull" }, // Tr0uble
   { name: "Bailey Dipalma", number: 3, team: "Mercedes" }, // Baileydipalma
@@ -514,11 +517,12 @@ const DRIVERS = [
   { name: "Joshua Storm", number: 21, team: "McLaren" }, // The Renegade
   { name: "Rush v4", number: 4, team: "Audi" }, // Rush v4
   { name: "Matteo Moretti", number: 66, team: "Williams" }, // Benjo18, Mateusz Benek
-  { name: "Johnny El Tank", number: 44, team: "Aston Martin" }, // Jonny
+  { name: "Johnny El Tank", number: 44, team: "Aston Martin" }, // Jonny, Z-Sniper-X20
   { name: "Derky Dingus", number: 8, team: "Haas" }, // Derk, Lbjnyy49
   { name: "Roman Fernandez", number: 43, team: "Racing Bulls" }, // therealrealromanchu
   { name: "wrf", number: 2, team: "Cadillac" }, // wrf
   { name: "Benjamin Walker", number: 88, team: "Haas" }, // Bean
+  { name: "Ramspect", number: 89, team: "Aston Martin" }, // Ram
 ];
 
 // RACE: code, name, circuit, date, laps, results, dnf, pole, fastestLap, times, track (optional)
@@ -541,6 +545,10 @@ const RACES = [
   { code: "JPN", name: "Japanese Grand Prix", circuit: "Suzuka International Circuit", date: "2026-11-14", laps: 19,
      results: ["Satoru Kurosawa", "Ash Bartlam", "Bailey Dipalma", "Dismaw", "Derky Dingus", "Matteo Moretti", "Benjamin Walker"], dnf: ["Illia Barinov", "Floppy", "Roman Fernandez"],
      pole: "Bailey Dipalma", fastestLap: "Ash Bartlam", times: ["32:20.932", "+18.439", "+29.805", "+32.116", "+35.116", "+1 LAP", "+1 LAP"] },
+  
+  { code: "BHR", name: "Bahrain Grand Prix", circuit: "Bahrain International Circuit", date: "2026-11-15", laps: 29,
+     results: ["2006 Honda Civic", "Illia Barinov", "Ash Bartlam", "Joshua Storm", "William Heston", "Satoru Kurosawa", "Johnny El Tank", "Derky Dingus", "Benjamin Walker", "Jaydee Ellenburg", "Roman Fernandez", "Dismaw"], dnf: ["Ramspect"],
+     pole: "Illia Barinov", fastestLap: "Illia Barinov", times: ["45:37.614", "+3.393", "+13.569", "+54.340", "+1:04.340", "+1:06.889", "+1:09.889", "+1:12.889", "+1:15.889", "+2 LAPS", "+2 LAPS", "+2 LAPS", "DNF"] },
 
   // Upcoming rounds: add each date as "YYYY-MM-DD" (and laps if you like). They stay blacked out until you add results.
   { code: "BHR", name: "Bahrain Grand Prix", circuit: "Bahrain International Circuit", date: "2026-11-15" },
@@ -717,7 +725,17 @@ const RACES = [
     const key = norm(team.name);
     if (key && !teamMap.has(key)) teamMap.set(key, {...team, colour: team.colour || accent});
   });
-  const drivers = DRIVERS.map((d, i) => ({...d, number: d.number ?? '', id: i, teamData: teamMap.get(norm(d.team)) || {name:d.team || 'Unassigned', colour:'#657080'}}));
+  const teamInfo = n => teamMap.get(norm(n)) || {name:n || 'Unassigned', colour:'#657080'};
+  // d.team / d.teamData = the driver's CURRENT team (their latest move); d.startTeam = where they began the season
+  const drivers = DRIVERS.map((d, i) => {
+    const moves = [...(d.moves || [])].sort((a, b) => a.round - b.round);
+    const current = moves.length ? moves[moves.length - 1].team : d.team;
+    return {...d, number: d.number ?? '', id: i, startTeam: d.team, moves, team: current, teamData: teamInfo(current)};
+  });
+  // which team a driver raced for in a given round
+  const teamAt = (d, round) => { let t = d.startTeam; d.moves.forEach(m => { if (m.round <= round) t = m.team; }); return t; };
+  // the driver as they were in a given race (team, logo and colour of that race)
+  const asOf = (d, race) => { const td = d && race._teams && race._teams.get(d.id); return td ? {...d, team: td.name, teamData: td} : d; };
   const driverMap = new Map(drivers.map(d => [norm(d.name), d]));
   const races = RACES.map((race, i) => ({...race, round:i+1}));
   let selected = Math.max(0, races.findLastIndex ? races.findLastIndex(r => Array.isArray(r.results) && r.results.length) : races.map(r => Array.isArray(r.results) && r.results.length).lastIndexOf(true));
@@ -729,7 +747,11 @@ const RACES = [
   const racesDone = doneRaces.length;
   const stats = new Map(drivers.map(d => [d.id, {points:0, wins:0, podiums:0, poles:0, fl:0, races:0, dnfs:0, pos:new Array(drivers.length + 1).fill(0)}]));
   const history = new Map(drivers.map(d => [d.id, []]));
+  // constructors' points, counted per race for whichever team each driver was driving for at the time
+  const teamStats = new Map();
+  const tstat = name => { const k = norm(name); if (!teamStats.has(k)) teamStats.set(k, {points:0, pos:new Array(drivers.length + 1).fill(0), drivers:new Set()}); return teamStats.get(k); };
   doneRaces.forEach(r => {
+    r._teams = new Map(drivers.map(d => [d.id, teamInfo(teamAt(d, r.round))]));
     const order = r.results.map(n => driverMap.get(norm(n))).filter(Boolean);
     r._pts = new Map();
     const retired = (r.dnf || []).map(n => driverMap.get(norm(n)));
@@ -747,8 +769,10 @@ const RACES = [
         if (FASTEST_LAP_POINT && fl && fl.id === d.id && pos <= 10) pts += 1;
         st.points += pts;
         r._pts.set(d.id, pts);
+        const ts = tstat(r._teams.get(d.id).name);
+        ts.points += pts; ts.pos[pos]++; ts.drivers.add(d.id);
       }
-      if (dnf) { st.races++; st.dnfs++; }
+      if (dnf) { st.races++; st.dnfs++; tstat(r._teams.get(d.id).name).drivers.add(d.id); }
       if (pole && pole.id === d.id) st.poles++;
       if (fl && fl.id === d.id) st.fl++;
       history.get(d.id).push({race:r, pts: r._pts.get(d.id) ?? 0, pos: pos || null, dnf, pole: !!(pole && pole.id === d.id), fl: !!(fl && fl.id === d.id)});
@@ -763,15 +787,13 @@ const RACES = [
   };
   const driverTable = drivers.map(d => ({...d, ...stats.get(d.id)})).sort(byPoints);
   const teamTable = TEAMS.map(t => {
-    const members = drivers.filter(d => norm(d.team) === norm(t.name));
-    const sum = members.reduce((a, d) => {
-      const st = stats.get(d.id);
-      a.points += st.points;
-      st.pos.forEach((n, i) => { a.pos[i] += n; });
-      return a;
-    }, {points:0, pos:new Array(drivers.length + 1).fill(0)});
-    return {...t, colour: t.colour || accent, members, ...sum};
-  }).filter(t => t.members.length).sort(byPoints);
+    const members = drivers.filter(d => norm(d.team) === norm(t.name));   // current line-up
+    const ts = teamStats.get(norm(t.name));
+    const sum = ts ? {points: ts.points, pos: ts.pos} : {points:0, pos:new Array(drivers.length + 1).fill(0)};
+    // everyone who has driven for the team this season (current drivers first)
+    const contrib = [...new Set([...members.map(d => d.id), ...(ts ? ts.drivers : [])])].map(id => drivers[id]);
+    return {...t, colour: t.colour || accent, members, contrib, ...sum};
+  }).filter(t => t.members.length || t.contrib.length).sort(byPoints);
 
   // ---- title fight chart: cumulative points after every round ----
   let chartShown = new Set(driverTable.filter(d => d.points > 0).slice(0, 6).map(d => d.id));
@@ -878,7 +900,7 @@ const RACES = [
   }
   function confetti(race) {
     if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const cols = race.results.slice(0, 3).map(n => driverMap.get(norm(n))).filter(Boolean).map(teamColour).concat(['#ffd23f', '#ffffff']);
+    const cols = race.results.slice(0, 3).map(n => driverMap.get(norm(n))).filter(Boolean).map(d => teamColour(asOf(d, race))).concat(['#ffd23f', '#ffffff']);
     const box = document.createElement('div');
     box.className = 'confetti';
     for (let i = 0; i < 46; i++) {
@@ -1068,11 +1090,11 @@ const RACES = [
       $('race-detail').innerHTML = html;
       return;
     }
-    const finishers = race.results.map(name => driverMap.get(norm(name))).filter(Boolean);
-    const retired = (race.dnf || []).map(name => driverMap.get(norm(name))).filter(Boolean);
+    const finishers = race.results.map(name => driverMap.get(norm(name))).filter(Boolean).map(d => asOf(d, race));
+    const retired = (race.dnf || []).map(name => driverMap.get(norm(name))).filter(Boolean).map(d => asOf(d, race));
     const unknown = race.results.filter(name => !driverMap.has(norm(name)));
-    const pole = driverMap.get(norm(race.pole));
-    const fastest = driverMap.get(norm(race.fastestLap));
+    const pole = asOf(driverMap.get(norm(race.pole)), race);
+    const fastest = asOf(driverMap.get(norm(race.fastestLap)), race);
     const podium = finishers.slice(0,3);
     html += `<div class="racefacts"><div class="fact"><label>Distance</label><strong>${race.laps ? `${esc(race.laps)} laps` : '—'}</strong></div><div class="fact"><label>Pole</label><strong>${pole ? esc(pole.name) : '—'}</strong></div><div class="fact"><label>Fastest lap</label><strong>${fastest ? esc(fastest.name) : '—'}</strong></div></div>`;
     if (podium.length) {
@@ -1144,7 +1166,7 @@ const RACES = [
       consistent = award('Most consistent', list[0].name, `avg finish P${best.toFixed(1)}`, list.length > 1 ? `tied with ${nameList(list)}` : '', teamColour(list[0]), logoHTML(list[0].teamData));
     }
     const tt = teamTable[0];
-    const topTeam = tt && tt.points > 0 ? award('Top team', tt.name, `${tt.points} pts`, tt.members.map(d => d.name).join(' + '), tt.colour, logoHTML(tt)) : award('Top team', '', '—', '', '#657080');
+    const topTeam = tt && tt.points > 0 ? award('Top team', tt.name, `${tt.points} pts`, tt.contrib.map(d => d.name).join(' + '), tt.colour, logoHTML(tt)) : award('Top team', '', '—', '', '#657080');
     const awards = [most('Most wins', d => d.wins, 'win'), most('Most poles', d => d.poles, 'pole'), most('Most fastest laps', d => d.fl, 'fastest lap'), most('Most podiums', d => d.podiums, 'podium'), consistent, topTeam].join('');
 
     // records
