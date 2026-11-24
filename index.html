@@ -503,26 +503,31 @@ const TEAMS = [
 // team = the team the driver STARTED the season with.
 // moves (optional) = team changes, e.g. moves: [{ round: 5, team: "Ferrari" }] means from round 5 onward they drive for Ferrari.
 // Points from each race go to the team the driver was with in THAT race. Add more entries to moves for further switches.
+// leftAfter (optional) = the last round the driver took part in, e.g. leftAfter: 3. After that they are removed from the Drivers page and
+// their team's line-up, but their results, points and place in the standings (and their team's points) all stay.
 const DRIVERS = [
   { name: "Satoru Kurosawa", number: 13, team: "Cadillac", moves: [{ round: 2, team: "McLaren" }] }, // NL Savage
-  { name: "William Heston", number: 11, team: "Mercedes" }, // Rakyesh
-  { name: "Illia Barinov", number: 16, team: "Red Bull" }, // Tr0uble
+  { name: "William Heston", number: 11, team: "Mercedes", moves: [{ round: 7, team: "Williams" }]   }, // Rakyesh
+  { name: "Illia Barinov", number: 16, team: "Red Bull", moves: [{ round: 7, team: "Ferrari" }]    }, // Tr0uble
   { name: "Bailey Dipalma", number: 3, team: "Mercedes" }, // Baileydipalma
   { name: "Ash Bartlam", number: 72, team: "Alpine" }, // D13SEL
-  { name: "2006 Honda Civic", number: 24, team: "Ferrari" }, // 2006 Honda Civic
-  { name: "Floppy", number: 48, team: "Alpine" }, // Floppy, Gearheads
+  { name: "Damien Civic", number: 24, team: "Ferrari" }, // 2006 Honda Civic
+  { name: "Felix Florez", number: 48, team: "Alpine" }, // Floppy, Gearheads
   { name: "Jaydee Ellenburg", number: 52, team: "Cadillac" }, // Bondafide Medic
   { name: "Brian Fernandez Rodriguez", number: 99, team: "Red Bull" }, // Dismaw, Rex
-  { name: "Bradley Carlisle", number: 22, team: "Ferrari" }, // B-radd, Luminous_men15
+  { name: "Bradley Carlisle", number: 22, team: "Ferrari", leftAfter: 6 }, // B-radd, Luminous_men15
   { name: "Joshua Storm", number: 21, team: "McLaren" }, // The Renegade
-  { name: "Matteo Moretti", number: 66, team: "Williams" }, // Benjo18, Mateusz Benek
+  { name: "Matteo Moretti", number: 66, team: "Williams", moves: [{ round: 7, team: "Mercedes" }]  }, // Benjo18, Mateusz Benek
   { name: "Johnny El Tank", number: 44, team: "Aston Martin" }, // Jonny, Z-Sniper-X20
-  { name: "Derky Dingus", number: 8, team: "Haas" }, // Derk, Lbjnyy49
+  { name: "Derky Dingus", number: 8, team: "Haas", leftAfter: 4 }, // Derk, Lbjnyy49
   { name: "Roman Fernandez", number: 43, team: "Racing Bulls" }, // therealrealromanchu
-  { name: "wrf", number: 2, team: "Cadillac" }, // wrf
+  { name: "Adrian Keller", number: 2, team: "Cadillac" }, // wrf
   { name: "Benjamin Walker", number: 88, team: "Haas" }, // Bean
   { name: "Rodrigo Casas", number: 89, team: "Aston Martin" }, // Ramspect
   { name: "Tyler Savage", number: 31, team: "Racing Bulls" }, // Bluetrapt, Shawns
+  { name: "Ryan Antonelli", number: 83, team: "Williams" }, // ryandastar21
+  { name: "Bryan Spilner", number: 00, team: "Audi" }, // Hughesbrandon262
+
 ];
 
 // RACE: code, name, circuit, date, laps, results, dnf, pole, fastestLap, times, track (optional)
@@ -539,20 +544,26 @@ const RACES = [
     pole: "Bailey Dipalma", fastestLap: "Bailey Dipalma", times: ["36:04.318", "+2.114", "+1 LAP", "DNF", "DNF"] },
 
   { code: "CHN", name: "Chinese Grand Prix", circuit: "Shanghai International Circuit", date: "2026-11-08", laps: 20,
-     results: ["Illia Barinov", "Ash Bartlam", "Satoru Kurosawa", "2006 Honda Civic", "Floppy", "William Heston", "Bailey Dipalma", "Jaydee Ellenburg"], dnf: [],
+     results: ["Illia Barinov", "Ash Bartlam", "Satoru Kurosawa", "Damien Civic", "Felix Florez", "William Heston", "Bailey Dipalma", "Jaydee Ellenburg"], dnf: [],
      pole: "NL Savage", fastestLap: "2006 Honda Civic", times: ["33:04.809", "+0.924", "+12.195", "+15.552", "+34.473", "+1:04.194", "1:00.645", "+1 LAP"] },
 
   { code: "JPN", name: "Japanese Grand Prix", circuit: "Suzuka International Circuit", date: "2026-11-14", laps: 19,
-     results: ["Satoru Kurosawa", "Ash Bartlam", "Bailey Dipalma", "Brian Fernandez Rodriguez", "Derky Dingus", "Matteo Moretti", "Benjamin Walker"], dnf: ["Illia Barinov", "Floppy", "Roman Fernandez"],
+     results: ["Satoru Kurosawa", "Ash Bartlam", "Bailey Dipalma", "Brian Fernandez Rodriguez", "Derky Dingus", "Matteo Moretti", "Benjamin Walker"], dnf: ["Illia Barinov", "Felix Florez", "Roman Fernandez"],
      pole: "Bailey Dipalma", fastestLap: "Ash Bartlam", times: ["32:20.932", "+18.439", "+29.805", "+32.116", "+35.116", "+1 LAP", "+1 LAP"] },
 
   { code: "BHR", name: "Bahrain Grand Prix", circuit: "Bahrain International Circuit", date: "2026-11-15", laps: 29,
-     results: ["2006 Honda Civic", "Illia Barinov", "Ash Bartlam", "Joshua Storm", "William Heston", "Satoru Kurosawa", "Johnny El Tank", "Derky Dingus", "Benjamin Walker", "Jaydee Ellenburg", "Roman Fernandez", "Brian Fernandez Rodriguez"], dnf: ["Rodrigo Casas"],
+     results: ["Damien Civic", "Illia Barinov", "Ash Bartlam", "Joshua Storm", "William Heston", "Satoru Kurosawa", "Johnny El Tank", "Derky Dingus", "Benjamin Walker", "Jaydee Ellenburg", "Roman Fernandez", "Brian Fernandez Rodriguez"], dnf: ["Rodrigo Casas"],
      pole: "Illia Barinov", fastestLap: "Illia Barinov", times: ["45:37.614", "+3.393", "+13.569", "+54.340", "+1:04.340", "+1:06.889", "+1:09.889", "+1:12.889", "+1:15.889", "+2 LAPS", "+2 LAPS", "+2 LAPS", "DNF"] },
 
+  { code: "BCN", name: "Spanish Grand Prix", circuit: "Barcelona-Catalunya Circuit", date: "2026-11-21", laps: 33,
+     results: ["Matteo Moretti", "Ash Bartlam", "Rodrigo Casas", "Damien Civic", "Roman Fernandez", "William Heston", "Joshua Storm"], dnf: ["Ryan Antonelli", "Benjamin Walker", "Satoru Kurosawa"],
+     pole: "Rodrigo Casas", fastestLap: "Rodrigo Casas", times: ["43:28.102", "+4.178", "+13.669", "+14.324", "+30.556", "+53.836", "+1:12.377"] },
+  
+  { code: "ITA", name: "Italian Grand Prix", circuit: "Autodromo Nazionale Monza", date: "2026-11-22", laps: 26,
+     results: ["Damien Civic", "Matteo Moretti", "Jaydee Ellenburg", "Joshua Storm", "William Heston", "Tyler Savage", "Benjamin Walker"], dnf: ["Illia Barinov", "Ryan Antonelli", "Bailey Dipalma"],
+     pole: "Bailey Dipalma", fastestLap: "Benjamin Walker", times: ["41:47.907", "+5.121", "+10.140", "+11.054", "+14.054", "+1 LAP", "+1 LAP"] },
+  
   // Upcoming rounds: add each date as "YYYY-MM-DD" (and laps if you like). They stay blacked out until you add results.
-  { code: "BCN", name: "Spanish Grand Prix", circuit: "Barcelona-Catalunya Circuit", date: "2026-11-21" },
-  { code: "ITA", name: "Italian Grand Prix", circuit: "Autodromo Nazionale Monza", date: "2026-11-22" },
   { code: "GBR", name: "British Grand Prix", circuit: "Silverstone Circuit", date: "2026-11-28" },
   { code: "BEL", name: "Belgium Grand Prix", circuit: "Spa-Franchorchamps", date: "2026-11-29" },
   { code: "AZE", name: "Azerbajian Grand Prix", circuit: "Baku", date: "2026-12-05" },
@@ -729,8 +740,9 @@ const RACES = [
   const drivers = DRIVERS.map((d, i) => {
     const moves = [...(d.moves || [])].sort((a, b) => a.round - b.round);
     const current = moves.length ? moves[moves.length - 1].team : d.team;
-    return {...d, number: d.number ?? '', id: i, startTeam: d.team, moves, team: current, teamData: teamInfo(current)};
+    return {...d, number: d.number ?? '', id: i, startTeam: d.team, moves, team: current, teamData: teamInfo(current), left: d.leftAfter != null};
   });
+  const roster = drivers.filter(d => !d.left);   // drivers still in the league (left drivers keep their results but aren't listed here)
   // which team a driver raced for in a given round
   const teamAt = (d, round) => { let t = d.startTeam; d.moves.forEach(m => { if (m.round <= round) t = m.team; }); return t; };
   // the driver as they were in a given race (team, logo and colour of that race)
@@ -786,7 +798,7 @@ const RACES = [
   };
   const driverTable = drivers.map(d => ({...d, ...stats.get(d.id)})).sort(byPoints);
   const teamTable = TEAMS.map(t => {
-    const members = drivers.filter(d => norm(d.team) === norm(t.name));   // current line-up
+    const members = roster.filter(d => norm(d.team) === norm(t.name));   // current line-up
     const ts = teamStats.get(norm(t.name));
     const sum = ts ? {points: ts.points, pos: ts.pos} : {points:0, pos:new Array(drivers.length + 1).fill(0)};
     // everyone who has driven for the team this season (current drivers first)
@@ -819,8 +831,17 @@ const RACES = [
       const mates = drivers.filter(m => norm(m.team) === norm(d.team));
       const dash = mates.length > 1 && mates[0].id !== d.id ? ' stroke-dasharray="7 5"' : '';
       const path = pts.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)} ${y(v).toFixed(1)}`).join(' ');
-      const dots = pts.map((v, i) => i ? `<circle class="dot" cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="4.5"><title>${esc(d.name)} · after ${esc(doneRaces[i - 1].code || 'R' + i)}: ${v} pts</title></circle>` : '').join('');
-      return `<g class="ln" data-did="${d.id}" style="--team:${esc(teamColour(d))}"><path class="hit" d="${path}"/><path class="main" d="${path}"${dash}/>${dots}</g>`;
+      // colour of each stretch of line = the team the driver raced for in that round (so a team switch changes the line colour)
+      const segCol = i => doneRaces[i - 1]._teams.get(d.id).colour || '#657080';
+      const groups = [];
+      for (let i = 1; i <= n; i++) {
+        const c = segCol(i), last = groups[groups.length - 1];
+        if (last && last.c === c) last.to = i; else groups.push({c, from: i - 1, to: i});
+      }
+      const seg = g => pts.slice(g.from, g.to + 1).map((v, k) => `${k ? 'L' : 'M'}${x(g.from + k).toFixed(1)} ${y(v).toFixed(1)}`).join(' ');
+      const mains = groups.map(g => `<path class="main" d="${seg(g)}" style="--team:${esc(g.c)}"${dash}/>`).join('');
+      const dots = pts.map((v, i) => i ? `<circle class="dot" style="--team:${esc(segCol(i))}" cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="4.5"><title>${esc(d.name)} · after ${esc(doneRaces[i - 1].code || 'R' + i)}: ${v} pts</title></circle>` : '').join('');
+      return `<g class="ln" data-did="${d.id}" style="--team:${esc(teamColour(d))}"><path class="hit" d="${path}"/>${mains}${dots}</g>`;
     }).join('');
     const labels = series.map(({d, pts}) => `<g class="ln" data-did="${d.id}" style="--team:${esc(teamColour(d))}"><text class="lab" x="${x(n) + 12}" y="${labelY.get(d.id) + 4}">${esc(d.name.length > 16 ? d.name.slice(0, 15) + '…' : d.name)} · ${pts[n]}</text></g>`).join('');
     const chips = driverTable.filter(d => stats.get(d.id).races > 0).map(d => `<button type="button" class="chip2" data-toggle="${d.id}" data-did="${d.id}" aria-pressed="${chartShown.has(d.id)}" style="--team:${esc(teamColour(d))}"><i></i>${esc(d.name)}</button>`).join('');
@@ -1284,7 +1305,7 @@ const RACES = [
     grid.className = (driversView === 'cards' ? 'cardgrid' : 'driversgrid') + (driversAnimated ? ' noanim' : '');
     document.querySelectorAll('#dview [data-dview]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.dview === driversView)));
     if (driversView === 'cards') {
-      const ranked = drivers.map(d => ({d, r: rateDriver(d)})).sort((x, y) => (y.r ? y.r.ovr : -1) - (x.r ? x.r.ovr : -1) || stats.get(y.d.id).points - stats.get(x.d.id).points);
+      const ranked = roster.map(d => ({d, r: rateDriver(d)})).sort((x, y) => (y.r ? y.r.ovr : -1) - (x.r ? x.r.ovr : -1) || stats.get(y.d.id).points - stats.get(x.d.id).points);
       let rk = 0;
       ranked.forEach(x => { if (x.r) x.rank = ++rk; });
       const list = q ? ranked.filter(({d}) => norm(d.name).includes(q) || norm(d.teamData.name).includes(q) || String(d.number) === q) : ranked;
@@ -1293,10 +1314,10 @@ const RACES = [
       return;
     }
     let groups = TEAMS.map(team => {
-      const members = drivers.filter(d => norm(d.team) === norm(team.name));
+      const members = roster.filter(d => norm(d.team) === norm(team.name));
       return {...team, colour: team.colour || accent, members, total: members.length};
     });
-    const unassigned = drivers.filter(d => !teamMap.has(norm(d.team)));
+    const unassigned = roster.filter(d => !teamMap.has(norm(d.team)));
     if (unassigned.length) groups.push({name:'Other / unassigned', colour:'#657080', members:unassigned, total:unassigned.length});
     if (q) groups = groups.map(g => norm(g.name).includes(q) ? g : {...g, members: g.members.filter(d => norm(d.name).includes(q) || String(d.number) === q)}).filter(g => g.members.length);
     grid.innerHTML = groups.length ? groups.map((team, ti) => `<article class="teamcard" style="--team:${esc(team.colour)};--ink:${inkFor(team.colour)};--i:${ti}"><div class="carstage">${carHTML(team)}</div><header class="teamhead">${logoHTML(team)}<h3>${esc(team.name)}</h3><span class="teamcount">${team.total} driver${team.total===1?'':'s'}</span></header><div class="teamdrivers">${team.members.length ? team.members.map(d => `<div class="driverrow" data-driver="${d.id}" tabindex="0" role="button" aria-label="Open ${esc(d.name)} profile"><span class="number">${d.number!==''?esc(d.number):'—'}</span>${logoHTML(d.teamData)}<span class="drivername">${esc(d.name)}</span><span class="rowright">${dstats(d)}${formStrip(d)}</span></div>`).join('') : '<div class="driverrow"><span class="drivername dnf">No drivers yet</span></div>'}</div></article>`).join('') : `<div class="empty emptydrivers"><strong>${q ? 'No matches' : 'No drivers added yet'}</strong>${q ? 'Try a different name, number or team.' : 'Add your teams and drivers in the TEAMS and DRIVERS sections at the top of this HTML file.'}</div>`;
@@ -1340,7 +1361,7 @@ const RACES = [
       results: `${LEAGUE.game} · ${LEAGUE.season}`,
       standings: `After ${racesDone} of ${races.length} rounds`,
       stats: `The league in numbers after ${racesDone} of ${races.length} rounds`,
-      drivers: `${drivers.length} drivers across ${TEAMS.length} teams · click a driver for their season, or pit two against each other`
+      drivers: `${roster.length} drivers across ${TEAMS.length} teams · click a driver for their season, or pit two against each other`
     }[page];
     if (page === 'stats' && statsView === 'overview') animateCounts();
   }
